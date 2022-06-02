@@ -24,7 +24,7 @@ class InstagramScraper():
         self.date_end = datetime(date_end[0], date_end[1], date_end[2])
 
     #HASHTAG
-    def download_hastag_posts(self, hashtag):
+    def download_hashtag_posts(self, hashtag, max_count):
         self.L.dirname_pattern=os.path.join(destination, hashtag) #@leebri2n
         iter = 0
         limit = 30
@@ -107,4 +107,5 @@ class InstagramScraper():
                 print("\n\n")
 
 cls = InstagramScraper(login_user='gramy.scrape', login_pass='insta$8scrape', dest_path=destination)
-cls.download_hastag_posts("capitalshockey")
+#cls.L.download_hashtag('burgers', max_count=30)
+cls.download_hashtag_posts("capitalshockey", 30)

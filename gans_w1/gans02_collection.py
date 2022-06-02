@@ -8,7 +8,7 @@ destination = r'C:\Users\leebr\Documents\GitHub\data\gans'
 
 class InstagramScraper():
     """
-        Class credit to:
+        Class credit to: @HKN MZ on medium.com
     """
     def __init__(self, login_user='', login_pass='', dest_path='', \
         date_start=(2022, 5, 1), date_end=(2022, 6, 1)) -> None:

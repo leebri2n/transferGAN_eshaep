@@ -104,4 +104,4 @@ class GetInstagramProfile():
                 print("\n\n")
 
 cls = GetInstagramProfile()
-cls.download_hastag_posts("attackontitaneditsb")
+cls.download_hastag_posts("uvaldephotography")

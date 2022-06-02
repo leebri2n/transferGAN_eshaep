@@ -4,11 +4,12 @@ from itertools import dropwhile, takewhile
 import csv
 import os
 
-destination = r'C:\Users\leebr\Documents\GitHub\data\gans'
+sys_path = os.getcwd()
+destination = os.path.join(sys_path, 'input')
 
 class InstagramScraper():
     """
-        Class credit to: @HKN MZ on medium.com
+        Class credit to:
     """
     def __init__(self, login_user='', login_pass='', dest_path='', \
         date_start=(2022, 5, 1), date_end=(2022, 6, 1)) -> None:
@@ -24,20 +25,18 @@ class InstagramScraper():
         self.date_end = datetime(date_end[0], date_end[1], date_end[2])
 
     #HASHTAG
-    def download_hastag_posts(self, hashtag):
-        self.L.dirname_pattern=os.path.join(destination, hashtag) #@leebri2n
+    def download_hashtag_posts(self, hashtag, max_count):
+        self.L.dirname_pattern=os.path.join(destination, hashtag) #leebri2n
         iter = 0
-        limit = 30
-        for post in instaloader.Hashtag.from_name(self.L.context, hashtag).get_posts():
+        for post in enumerate(instaloader.Hashtag.from_name(self.L.context, hashtag).get_posts()):
             try:
                 self.L.download_post(post, target='#'+hashtag)
-                print("Saving image ", str(iter), " of ", str(limit))
-                if iter == limit:
-                    break
                 iter += 1
-            except: #@leebri2n
+            except: #leebri2n
                 print("ERROR ENCOUNTERED!")
                 continue
+            if iter == max_count:
+              break
 
         self.L.dirname_pattern = os.path.join(destination, '')
 
@@ -107,4 +106,6 @@ class InstagramScraper():
                 print("\n\n")
 
 cls = InstagramScraper(login_user='gramy.scrape', login_pass='insta$8scrape', dest_path=destination)
-cls.download_hastag_posts("capitalshockey")
+#cls.L.download_hashtag("capitals", max_count=30)
+
+cls.download_hashtag_posts("capitalshockey", 30)

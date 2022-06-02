@@ -20,7 +20,7 @@ insta_scraper.usernames.append("chingooz")
 
 print(insta_scraper.usernames)
 
-insta_scraper.scrape()
+insta_scraper.scrape()al
 """
 
 import instaloader

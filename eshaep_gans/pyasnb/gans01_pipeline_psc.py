@@ -348,7 +348,7 @@ class Pipeline():
         #return lpcs
         return os.listdir(blurry_path)
 
-    def text_detection(self, input_list, confidence, allow=1, resize=640):
+    def text_detection(self, input_list, confidence, allowed_area=0.1, allow=1, resize=640):
         """
           Detects and recognizes allged text that appears in images.
 
@@ -362,7 +362,6 @@ class Pipeline():
         """
         class_path = os.path.join(input_path, 'classifications')
         text_path = os.path.join(class_path, 'textdetection')
-        print(text_path)
         shutil.rmtree(text_path)
         os.makedirs(text_path, exist_ok=True)
 
@@ -375,7 +374,6 @@ class Pipeline():
         #Loop thru input_list, detect text
         for cur_img in input_list:
             cur_name = os.path.basename(os.path.normpath(cur_img))
-            print(cur_name)
             wid_new = resize
             hei_new = resize #Adjustable
 
@@ -403,6 +401,7 @@ class Pipeline():
 
             (numRows, numCols) = scores.shape[2:4]
             rects = []
+            rects_areas = []
             confidences = []
 
             for y in range(0, numRows):
@@ -446,11 +445,19 @@ class Pipeline():
                 endY = int(endY * hei_ratio)
                 # draw the bounding box on the image
                 cv2.rectangle(img_orig, (startX, startY), (endX, endY), (0, 255, 0), 2)
+                area = np.abs(endX - startX) * np.abs(endY-startY)
+                rects_areas.append(area)
 
             #cv2.imshow(img_orig)
             if len(rects) > allow:
                 print(len(rects))
                 cv2.imwrite(os.path.join(text_path, cur_name), img_orig)
+
+            total_area = wid_orig * hei_orig
+            for area in rects_areas:
+                if area / total_area > allowed_area:
+                    cv2.imwrite(os.path.join(text_path, cur_name), img_orig)
+
 
         return os.listdir(text_path)
 
@@ -539,16 +546,15 @@ class Pipeline():
 input_path = os.path.join(data_path, 'input')
 output_path = os.path.join(data_path, 'output')
 
+print("TIME OF EXECUTION", datetime.now())
 pipeline = Pipeline(proj_path=proj_path, input_folder=input_path, output_folder=output_path, \
     size=1024, blur_thresh=30, text_thresh=0.99)
 
 pipeline.blurry_input = pipeline.blur_detection(input_path, v=False)
-print(pipeline.blurry_input)
 pipeline.text_input = pipeline.text_detection(input_path, confidence=0.99, allow=3)
-print(pipeline.text_input)
 
 start = time.time()
-#pipeline.filter(input_path, output_path, pipeline.size)
+pipeline.filter(input_path, output_path, pipeline.size)
 end = time.time()
 
 print("FILTERING EXECUTION TIME: ", str((end-start)/60), "MINUTES")

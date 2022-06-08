@@ -38,7 +38,7 @@ prefix = '/home/hume-users/leebri2n/Documents/'
 customized_path = 'hume2022/eshaep_gans/'
 proj_path = prefix + customized_path
 
-print('Path to training data: {}'.format(proj_path))
+print('Path to data: {}'.format(proj_path))
 
 #TODO: Standardize input/output paths to make more sense.
 

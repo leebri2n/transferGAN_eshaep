@@ -110,6 +110,6 @@ print(cls.L.dirname_pattern)
 
 start = time.time()
 #cls.download_hashtag_posts(hashtags=object_tags, supercategory='objects', max_count=50)
-cls.download_hashtag_posts(hashtags=animal_tags, supercategory='animals', max_count=1000)
+cls.download_hashtag_posts(hashtags=animal_tags, supercategory='animals', max_count=250)
 end = time.time()
 print("TOTAL EXECUTION TIME: ", str((end-start)/60), "MINUTES")

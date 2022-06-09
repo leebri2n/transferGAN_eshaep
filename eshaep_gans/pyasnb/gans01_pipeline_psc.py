@@ -447,7 +447,9 @@ class Pipeline():
             total_area = wid_orig * hei_orig
             print("TEXT TO IMAGE RATIO:", text_area/total_area)
             if text_area / total_area > allowed_area:
+                cv2.imwrite(os.path.join(os.path.join(text_path, 'unacceptable'), cur_name), img_orig)
                 print("LARGE TEXT DETECTED.")
+
             cv2.imwrite(os.path.join(text_path, cur_name), img_orig)
 
         return os.listdir(text_path)
@@ -544,7 +546,7 @@ pipeline = Pipeline(proj_path=proj_path, input_folder=input_path, output_folder=
 
 pipeline.blurry_input = pipeline.blur_detection(input_path, v=False)
 pipeline.text_input = pipeline.text_detection(input_path, confidence=0.99, \
-    allow=3, allowed_area=0.6)
+    allow=3, allowed_area=0.1)
 
 start = time.time()
 pipeline.filter(input_path, output_path, pipeline.size)

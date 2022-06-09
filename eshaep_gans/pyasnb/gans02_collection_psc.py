@@ -42,7 +42,7 @@ print('Path to data: {}'.format(proj_path))
 
 #TODO: Standardize input/output paths to make more sense.
 
-destination = os.path.join(prefix, 'data')
+destination = os.path.join(os.path.join(prefix, 'data'), 'input')
 
 class InstagramScraper():
     """
@@ -58,14 +58,11 @@ class InstagramScraper():
             save_metadata=False,
             compress_json=False)
 
-        self.L.login(login_user, login_pass)
-
-        #Dangerous!
-        #shutil.rmtree(dest_path)
-        #os.makedirs(dest_path)
-        
-        #self.date_start = datetime(date_start[0], date_start[1], date_start[2])
-        #self.date_end = datetime(date_end[0], date_end[1], date_end[2])
+        try:
+            self.L.login(login_user, login_pass)
+            print("Login successful.")
+        except:
+            print("Login unsuccessful.")
 
     #HASHTAG
     def download_hashtag_posts(self, hashtags=[], supercategory='misc', max_count=25):
@@ -80,7 +77,7 @@ class InstagramScraper():
           iter = 0
           limit = max_count
           self.L.dirname_pattern = os.path.join(supcat_path, tag)
-          print("Printing for ", tag)
+          print("Scraping for ", tag)
 
           #self.L.download_hashtag(tag, max_count=1000,profile_pic=False, posts=False)
 
@@ -93,18 +90,26 @@ class InstagramScraper():
                   continue
               if iter == limit:
                   break
+              elif iter % 10 == 0:
+                  print("Sleeping to prevent lockout... (30sec)")
+                  time.sleep(30)
+
               iter += 1
 
         #Reset directory
         self.L.dirname_pattern = os.path.join(destination, '')
-
+        print("Scraping job completed. Resetting directory...")
 
 cls = InstagramScraper(login_user='gramy.scrape', login_pass='insta$8scrape', dest_path=destination)
 
 landmark_tags = ['empirestatebuilding']
-object_tags = ['bus', 'trainphotography']
-animal_tags = []
+object_tags = ['trainphotography']
+animal_tags = ['corgi']
 
 print(cls.L.dirname_pattern)
 
-cls.download_hashtag_posts(hashtags=landmark_tags, supercategory='landmarks', max_count=1000)
+start = time.time()
+#cls.download_hashtag_posts(hashtags=object_tags, supercategory='objects', max_count=50)
+cls.download_hashtag_posts(hashtags=animal_tags, supercategory='animals', max_count=1000)
+end = time.time()
+print("TOTAL EXECUTION TIME: ", str((end-start)/60), "MINUTES")

@@ -88,10 +88,6 @@ class Pipeline():
         for img in self.allfiles_input:
             # ~~~~~~~~~~~~~~~~ Start Loop ~~~~~~~~~~~~~~~~
             cur_name = os.path.basename(os.path.normpath(img))
-            print("Assessing input", str(img_num), " of ", \
-                str(len(self.allfiles_input)), cur_name)
-            #Update valid img number
-            img_num += 1
 
             if self.reject_image(img, self.input_path, output_path, size): continue
 
@@ -110,6 +106,11 @@ class Pipeline():
 
             #Path handling ~~~
             self.acc_img.append(acc_img_path)
+
+            #Update valid img number
+            print("Assessing input", str(img_num), " of ", \
+                str(len(self.allfiles_input)), cur_name)
+            img_num += 1
             # ~~~~~~~~~~~~~~~~ End Loop ~~~~~~~~~~~~~~~~
 
         #save to json to /output ~~~
@@ -355,6 +356,10 @@ class Pipeline():
         text_path = os.path.join(class_path, 'textdetection')
         shutil.rmtree(text_path)
         os.makedirs(text_path, exist_ok=True)
+        os.makedirs(os.path.join(os.path.join(text_path,\
+         'unacceptable')), exist_ok=True)
+        os.makedirs(os.path.join(os.path.join(text_path,\
+         'acceptable')), exist_ok=True)
 
         input_list = []
         self.walk(input_path, input_list)
@@ -432,6 +437,7 @@ class Pipeline():
                 #area check
                 area = np.abs(endX - startX) * np.abs(endY-startY)
                 rects_areas.append(area)
+                print(endX-startX, endY-startY)
 
                 # scale the bounding box coordinates based on the respective ratios
                 startX = int(startX * wid_ratio)
@@ -446,11 +452,13 @@ class Pipeline():
             text_area = np.sum(rects_areas)
             total_area = wid_orig * hei_orig
             print("TEXT TO IMAGE RATIO:", text_area/total_area)
-            if text_area / total_area > allowed_area:
-                cv2.imwrite(os.path.join(os.path.join(text_path, 'unacceptable'), cur_name), img_orig)
-                print("LARGE TEXT DETECTED.")
 
-            cv2.imwrite(os.path.join(text_path, cur_name), img_orig)
+            if text_area / total_area >= allowed_area:
+                cv2.imwrite(os.path.join(os.path.join(text_path, 'unacceptable'), \
+                    cur_name), img_orig)
+            else:
+                cv2.imwrite(os.path.join(os.path.join(text_path, 'acceptable'), \
+                    cur_name), img_orig)
 
         return os.listdir(text_path)
 
@@ -539,19 +547,25 @@ class Pipeline():
 start_t = time.time()
 input_path = os.path.join(data_path, 'input')
 output_path = os.path.join(data_path, 'output')
-
 print("TIME OF EXECUTION", datetime.now())
+
 pipeline = Pipeline(proj_path=proj_path, input_folder=input_path, output_folder=output_path, \
     size=1024, blur_thresh=30, text_thresh=0.99)
 
 pipeline.blurry_input = pipeline.blur_detection(input_path, v=False)
 pipeline.text_input = pipeline.text_detection(input_path, confidence=0.99, \
-    allow=3, allowed_area=0.1)
+    allow=3, allowed_area=0.05)
+
+#test = []
+#pipeline.walk(input_path, test)
+#print(test)
+#print('/home/hume-users/leebri2n/Documents/data/input/classifications/thisshouldntbehere.txt' in test)
+#print(len(test))
 
 start = time.time()
 pipeline.filter(input_path, output_path, pipeline.size)
 end = time.time()
-end_t = time.time()
 
+end_t = time.time()
 print("FILTERING EXECUTION TIME: ", str((end-start)/60), "MINUTES")
 print("TOTAL EXECUTION TIME: ", str((end_t-start_t)/60), "MINUTES")

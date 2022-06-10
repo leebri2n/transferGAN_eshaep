@@ -19,13 +19,8 @@ import json
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import scipy
 
-import imutils
 import time
-from imutils.object_detection import non_max_suppression
-#from google.colab.patches import cv2_imshow
-
 import instaloader
 from datetime import datetime
 from itertools import dropwhile, takewhile
@@ -34,6 +29,8 @@ import os
 
 #Append the directory to your python path
 prefix = '/home/hume-users/leebri2n/Documents/'
+prefix = 'C:/Users/leebr/Documents/GitHub/'
+
 # modify customized_path
 customized_path = 'hume2022/eshaep_gans/'
 proj_path = prefix + customized_path
@@ -100,7 +97,7 @@ class InstagramScraper():
         self.L.dirname_pattern = os.path.join(destination, '')
         print("Scraping job completed. Resetting directory...")
 
-cls = InstagramScraper(login_user='gramy.scrape', login_pass='insta$8scrape', dest_path=destination)
+cls = InstagramScraper(login_user='gramy.scrape', login_pass='insta$8scrape88', dest_path=destination)
 
 landmark_tags = ['empirestatebuilding']
 object_tags = ['trainphotography']

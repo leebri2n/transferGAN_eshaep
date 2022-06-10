@@ -11,7 +11,6 @@ import json
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import scipy
 
 import face_recognition as fr
 import imquality.brisque as brisque
@@ -31,7 +30,10 @@ from PIL import Image, ImageStat
 
 # ~~~~~~~~~~~~~~~~~~~~ Pathing ~~~~~~~~~~~~~~~~~~~~
 prefix = '/home/hume-users/leebri2n/Documents/'
+prefix = 'C:/Users/leebr/Documents/GitHub'
 # modify customized_path
+#proj_path = os.path.join(os.path.join(prefix, 'hume2022'), 'eshaep_gans')
+#data_path = os.path.join(prefix, 'data')
 proj_path = os.path.join(os.path.join(prefix, 'hume2022'), 'eshaep_gans')
 data_path = os.path.join(prefix, 'data')
 
@@ -153,9 +155,9 @@ class Pipeline():
         start = time.time()
         if cur_ext not in self.valid_ext:
             print(cur_name, " REJECTED.", " Warning: Not an image.")
-            shutil.copy(cur_img, reject_path)
-            os.rename(os.path.join(reject_path, cur_name), \
-                os.path.join(reject_path, 'rjnotimg_'+cur_name))
+            shutil.copy(cur_img, os.path.join(reject_path, 'rjnotim_'+cur_name))
+            #os.rename(os.path.join(reject_path, cur_name), \
+                #os.path.join(reject_path, 'rjnotimg_'+cur_name))
             return True
         end = time.time()
         #print(cur_name, "TIME FOR FORMAT ELAPSED: ", str(end-start))
@@ -453,7 +455,7 @@ class Pipeline():
             total_area = wid_orig * hei_orig
             print("TEXT TO IMAGE RATIO:", text_area/total_area)
 
-            if text_area / total_area >= allowed_area:
+            if text_area / total_area >= allowed_area or len(rects) > 10:
                 cv2.imwrite(os.path.join(os.path.join(text_path, 'unacceptable'), \
                     cur_name), img_orig)
             else:
@@ -482,6 +484,7 @@ class Pipeline():
             formats: set of image formats that appear
             acc: number of accepted images
         """
+        print(acc)
         datetime_exc = datetime.now() #Date and time of finished execution
         num = len(imgfiles_inputlist)
         minw = np.min(widths)
@@ -491,13 +494,14 @@ class Pipeline():
         avw = np.average(widths)
         avh = np.average(heights)
         rej = num - acc
-        percentage = (acc / (acc + rej))
+        percentage = (acc / (num))
 
         #Write stuff to file
         log_path = os.path.join(self.proj_path, 'logs')
         with open(os.path.join(log_path, \
-            (datetime_exc.strftime("%m%d%Y_%H:%M:%S")))+'log.txt', 'w') as f:
-            f.write(join("Latest successful execution:", datetime_exc.strftime("%m/%d/%Y, %H:%M:%S")))
+            (datetime_exc.strftime("%m%d%Y_%H%M%S")))+'log.txt', 'w') as f:
+            f.write(join("Latest successful execution finished at:", \
+                datetime_exc.strftime("%m/%d/%Y, %H:%M:%S")))
             f.write('\n')
 
             f.write(join("Number of valid images:", str(num)))
@@ -554,18 +558,13 @@ pipeline = Pipeline(proj_path=proj_path, input_folder=input_path, output_folder=
 
 pipeline.blurry_input = pipeline.blur_detection(input_path, v=False)
 pipeline.text_input = pipeline.text_detection(input_path, confidence=0.99, \
-    allow=3, allowed_area=0.05)
-
-#test = []
-#pipeline.walk(input_path, test)
-#print(test)
-#print('/home/hume-users/leebri2n/Documents/data/input/classifications/thisshouldntbehere.txt' in test)
-#print(len(test))
+    allow=3, allowed_area=0.03)
 
 start = time.time()
 pipeline.filter(input_path, output_path, pipeline.size)
 end = time.time()
 
 end_t = time.time()
+
 print("FILTERING EXECUTION TIME: ", str((end-start)/60), "MINUTES")
 print("TOTAL EXECUTION TIME: ", str((end_t-start_t)/60), "MINUTES")

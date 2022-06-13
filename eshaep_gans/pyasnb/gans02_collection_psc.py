@@ -82,14 +82,14 @@ class InstagramScraper():
               try:
                   self.L.download_post(post, target='#'+tag)
                   print("Saving image ", str(iter), " of ", str(limit))
-              except: #leebri2n
-                  print("ERROR WITH POST ENCOUNTERED")
+              except : #leebri2n
+                  print("Error encountered: ", sys.exc_info()[0])
                   continue
               if iter == limit:
                   break
               elif iter % 10 == 0:
-                  print("Sleeping to prevent lockout... (30sec)")
-                  time.sleep(30)
+                  print("Sleeping to prevent lockout... (45sec)")
+                  time.sleep(45)
 
               iter += 1
 
@@ -97,11 +97,11 @@ class InstagramScraper():
         self.L.dirname_pattern = os.path.join(destination, '')
         print("Scraping job completed. Resetting directory...")
 
-cls = InstagramScraper(login_user='gramy.scrape', login_pass='insta$8scrape88', dest_path=destination)
+cls = InstagramScraper(login_user='gram.scrape', login_pass='insta$8scrape88', dest_path=destination)
 
 landmark_tags = ['empirestatebuilding']
 object_tags = ['trainphotography']
-animal_tags = ['corgi']
+animal_tags = ['parrot']
 
 print(cls.L.dirname_pattern)
 

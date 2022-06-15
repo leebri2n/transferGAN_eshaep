@@ -28,8 +28,8 @@ import csv
 import os
 
 #Append the directory to your python path
-prefix = '/home/hume-users/leebri2n/Documents/'
 prefix = 'C:/Users/leebr/Documents/GitHub/'
+prefix = '/home/hume-users/leebri2n/Documents/'
 
 # modify customized_path
 customized_path = 'hume2022/eshaep_gans/'
@@ -54,6 +54,8 @@ class InstagramScraper():
             download_video_thumbnails=False,
             save_metadata=False,
             compress_json=False)
+
+        self.post_errors = 0
 
         try:
             self.L.login(login_user, login_pass)
@@ -83,8 +85,10 @@ class InstagramScraper():
                   self.L.download_post(post, target='#'+tag)
                   print("Saving image ", str(iter), " of ", str(limit))
               except : #leebri2n
+                  self.post_errors += 1
                   print("Error encountered: ", sys.exc_info()[0])
                   continue
+
               if iter == limit:
                   break
               elif iter % 10 == 0:
@@ -99,14 +103,18 @@ class InstagramScraper():
 
 cls = InstagramScraper(login_user='gram.scrape', login_pass='insta$8scrape88', dest_path=destination)
 
-landmark_tags = ['empirestatebuilding']
-object_tags = ['trainphotography']
-animal_tags = ['parrot']
+landmark_tags = ['']
+landscape_tags = ['beachsunset']
+object_tags = ['lamborghini', 'newyorkpizza']
+animal_tags = ['corgi', 'tabbycat']
 
 print(cls.L.dirname_pattern)
 
 start = time.time()
-#cls.download_hashtag_posts(hashtags=object_tags, supercategory='objects', max_count=50)
-cls.download_hashtag_posts(hashtags=animal_tags, supercategory='animals', max_count=250)
+# ~~~~~~~~~~~~~~~~~~ ENTER SCRAPING SUBJECTS ~~~~~~~~~~~~~~~~~
+cls.download_hashtag_posts(hashtags=object_tags, supercategory='objects', max_count=500)
+cls.download_hashtag_posts(hashtags=animal_tags, supercategory='animals', max_count=500)
+cls.download_hashtag_posts(hashtags=landscape_tags, supercategory='landscapes', max_count=500)
+# ~~~~~~~~~~~~~~~~ END SCRAPING ~~~~~~~~~~~~~~~~~~~~~~~~~
 end = time.time()
 print("TOTAL EXECUTION TIME: ", str((end-start)/60), "MINUTES")

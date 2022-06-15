@@ -61,4 +61,7 @@ from keras.layers.convolutional import Conv2D, Conv2DTranspose
 from keras.models import Sequential
 from keras.optimizers import Adam
 
-dim = 1024 #assuming square images
+dim = 1024 #assuming square images.
+channels = 1 #3?
+
+img_shape = (dim, dim, channels)

@@ -82,13 +82,13 @@ class InstagramScraper():
 
           for post in instaloader.Hashtag.from_name(self.L.context, tag).get_posts_resumable():
               try:
-                  # Testing purposes
-                  bool = self.L.download_post(post, target='#'+tag)
-                  if bool:
-                      print("File already exists!")
-                  # Testing purpoes
-
                   print("Saving image ", str(iter), " of ", str(limit))
+
+                  file_exists = self.L.download_post(post, target='#'+tag)
+                  if not file_exists:
+                      print("File already exists!")
+                  else:
+                      iter += 1
               except : #leebri2n
                   self.post_errors += 1
                   print("Error encountered: ", sys.exc_info()[0])
@@ -99,8 +99,6 @@ class InstagramScraper():
               elif iter % 10 == 0:
                   print("Sleeping to prevent lockout... (45sec)")
                   time.sleep(45)
-
-              iter += 1
 
         #Reset directory
         self.L.dirname_pattern = os.path.join(destination, '')
@@ -119,12 +117,12 @@ print(cls.L.dirname_pattern)
 
 start = time.time()
 
-cls.download_hashtag_posts(hashtags=test, supercategory='test', max_count=20)
-print(1/0)
+#cls.download_hashtag_posts(hashtags=test, supercategory='test', max_count=20)
+
 # ~~~~~~~~~~~~~~~~~~ ENTER SCRAPING SUBJECTS ~~~~~~~~~~~~~~~~~
-cls.download_hashtag_posts(hashtags=object_tags, supercategory='objects', max_count=600)
-cls.download_hashtag_posts(hashtags=finish_tags, supercategory='objects', max_count=400)
-cls.download_hashtag_posts(hashtags=animal_tags, supercategory='animals', max_count=1000)
+#cls.download_hashtag_posts(hashtags=object_tags, supercategory='objects', max_count=600)
+#cls.download_hashtag_posts(hashtags=finish_tags, supercategory='objects', max_count=400)
+cls.download_hashtag_posts(hashtags=animal_tags, supercategory='animals', max_count=180)
 cls.download_hashtag_posts(hashtags=landscape_tags, supercategory='landscapes', max_count=1000)
 # ~~~~~~~~~~~~~~~~ END SCRAPING ~~~~~~~~~~~~~~~~~~~~~~~~~
 end = time.time()

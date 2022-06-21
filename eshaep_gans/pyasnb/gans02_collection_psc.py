@@ -106,15 +106,17 @@ cls = InstagramScraper(login_user='gram.scrape', login_pass='insta$8scrape88', d
 landmark_tags = ['']
 landscape_tags = ['beachsunset']
 object_tags = ['newyorkpizza']
-animal_tags = ['corgi', 'tabbycat']
+animal_tags = ['tabbycat']
+finish_tags = ['trainphotography']
 
 print(cls.L.dirname_pattern)
 
 start = time.time()
 # ~~~~~~~~~~~~~~~~~~ ENTER SCRAPING SUBJECTS ~~~~~~~~~~~~~~~~~
-#cls.download_hashtag_posts(hashtags=object_tags, supercategory='objects', max_count=500)
-cls.download_hashtag_posts(hashtags=animal_tags, supercategory='animals', max_count=500)
-cls.download_hashtag_posts(hashtags=landscape_tags, supercategory='landscapes', max_count=500)
+cls.download_hashtag_posts(hashtags=object_tags, supercategory='objects', max_count=600)
+cls.download_hashtag_posts(hashtags=finish_tags, supercategory='objects', max_count=400)
+cls.download_hashtag_posts(hashtags=animal_tags, supercategory='animals', max_count=1000)
+cls.download_hashtag_posts(hashtags=landscape_tags, supercategory='landscapes', max_count=1000)
 # ~~~~~~~~~~~~~~~~ END SCRAPING ~~~~~~~~~~~~~~~~~~~~~~~~~
 end = time.time()
 print("TOTAL EXECUTION TIME: ", str((end-start)/60), "MINUTES")

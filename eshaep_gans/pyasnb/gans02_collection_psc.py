@@ -82,7 +82,12 @@ class InstagramScraper():
 
           for post in instaloader.Hashtag.from_name(self.L.context, tag).get_posts_resumable():
               try:
-                  self.L.download_post(post, target='#'+tag)
+                  # Testing purposes
+                  bool = self.L.download_post(post, target='#'+tag)
+                  if bool:
+                      print("File already exists!")
+                  # Testing purpoes
+
                   print("Saving image ", str(iter), " of ", str(limit))
               except : #leebri2n
                   self.post_errors += 1
@@ -109,9 +114,13 @@ object_tags = ['newyorkpizza']
 animal_tags = ['tabbycat']
 finish_tags = ['trainphotography']
 
+test = ['nhl']
 print(cls.L.dirname_pattern)
 
 start = time.time()
+
+cls.download_hashtag_posts(hashtags=test, supercategory='test', max_count=20)
+print(1/0)
 # ~~~~~~~~~~~~~~~~~~ ENTER SCRAPING SUBJECTS ~~~~~~~~~~~~~~~~~
 cls.download_hashtag_posts(hashtags=object_tags, supercategory='objects', max_count=600)
 cls.download_hashtag_posts(hashtags=finish_tags, supercategory='objects', max_count=400)

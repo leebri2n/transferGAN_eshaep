@@ -29,12 +29,13 @@ from PIL import Image, ImageStat
 # ~~~~~~~~~~~~~~~~~~~~ Packages ~~~~~~~~~~~~~~~~~~~~
 
 # ~~~~~~~~~~~~~~~~~~~~ Pathing ~~~~~~~~~~~~~~~~~~~~
-prefix = '/home/hume-users/leebri2n/Documents/'
 prefix = 'C:/Users/leebr/Documents/GitHub'
+prefix = '/home/hume-users/leebri2n/Documents/'
+
 # modify customized_path
-#proj_path = os.path.join(os.path.join(prefix, 'hume2022'), 'eshaep_gans')
+#proj_path = os.path.join(os.path.join(prefix, 'hume-eshaep'), 'eshaep_gans')
 #data_path = os.path.join(prefix, 'data')
-proj_path = os.path.join(os.path.join(prefix, 'hume2022'), 'eshaep_gans')
+proj_path = os.path.join(os.path.join(prefix, 'hume-eshaep'), 'eshaep_gans')
 data_path = os.path.join(prefix, 'data')
 
 print('Path to project files: {}'.format(proj_path))
@@ -366,7 +367,8 @@ class Pipeline():
         input_list = []
         self.walk(input_path, input_list)
         input_list.sort()
-        model_path = os.path.join(self.proj_path, 'frozen_east_text_detection.pb')
+        model_path = os.path.join(os.path.join(self.proj_path, 'tools'), \
+        'frozen_east_text_detection.pb')
 
         print("Identifying text in images...")
         #Loop thru input_list, detect text
@@ -439,7 +441,7 @@ class Pipeline():
                 #area check
                 area = np.abs(endX - startX) * np.abs(endY-startY)
                 rects_areas.append(area)
-                print(endX-startX, endY-startY)
+                #print(endX-startX, endY-startY)
 
                 # scale the bounding box coordinates based on the respective ratios
                 startX = int(startX * wid_ratio)
@@ -453,7 +455,7 @@ class Pipeline():
 
             text_area = np.sum(rects_areas)
             total_area = wid_orig * hei_orig
-            print("TEXT TO IMAGE RATIO:", text_area/total_area)
+            #print("TEXT TO IMAGE RATIO:", text_area/total_area)
 
             if text_area / total_area >= allowed_area or len(rects) > 10:
                 cv2.imwrite(os.path.join(os.path.join(text_path, 'unacceptable'), \
@@ -554,11 +556,11 @@ output_path = os.path.join(data_path, 'output')
 print("TIME OF EXECUTION", datetime.now())
 
 pipeline = Pipeline(proj_path=proj_path, input_folder=input_path, output_folder=output_path, \
-    size=1024, blur_thresh=30, text_thresh=0.99)
+    size=1024, blur_thresh=60, text_thresh=0.99)
 
 pipeline.blurry_input = pipeline.blur_detection(input_path, v=False)
 pipeline.text_input = pipeline.text_detection(input_path, confidence=0.99, \
-    allow=3, allowed_area=0.03)
+    allow=3, allowed_area=0.08)
 
 start = time.time()
 pipeline.filter(input_path, output_path, pipeline.size)

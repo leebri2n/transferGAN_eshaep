@@ -1,0 +1,30 @@
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker build --tag sg2ada:latest .
+
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker run -itd --name sg2ada_eshaep -v /home/hume-users/leebri2n:/home/hume-users/leebri2n/ -w /home/hume-users/leebri2n sg2ada:latest /bin/bash
+
+docker exec -it sg2ada_eshaep /bin/bash
+
+python3 generate.py --outdir=out --seeds=0-35 --class=1 \
+    --network=https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/cifar10.pkl
+
+
+
+#Torch outputs:
+torch version = 1.8.0
+torch.cuda.devicecount = 0
+torch.cuda.isavailable = False
+torch.cuda.version = 11.1
+
+
+#CUDA
+nvidia-cuda-toolkit:
+  Installed: (none)
+  Candidate: 9.1.85-3ubuntu1
+  Version table:
+     9.1.85-3ubuntu1 500
+        500 http://us.archive.ubuntu.com/ubuntu bionic/multiverse amd64 Packages
+
+
+
+pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu113
+

@@ -79,11 +79,6 @@ class Pipeline():
         self.start = time.time()
         self.end = time.time()
 
-    def execute(self):
-        self.start = datetime.now()
-        pipeline.filter(self.input_path, self.output_path, self.size)
-        datetime.now()
-
     def filter(self, input_path, output_path, size):
         """
           Given input data files, processes and sorts them according to usability.
@@ -102,6 +97,7 @@ class Pipeline():
         accept_path = os.path.join(output_path, 'accepted')
         reject_path = os.path.join(output_path, 'rejected')
 
+        # ~~~~~~~~~~~~~ Rejection criteria ~~~~~~~~~~~~~
         self.reject_image('0', input_path, output_path)
         self.reject_image('1', accept_path, output_path)
         self.reject_image('2', accept_path, output_path)
@@ -109,11 +105,9 @@ class Pipeline():
         self.reject_image('4', accept_path, output_path)
         self.reject_image('5', accept_path, output_path)
 
-        print(len(os.listdir(accept_path)))
+        self.walk(accept_path, self.acc_img)
         img_num = 0
-        img_list = []
-        self.walk(accept_path, img_list)
-        for img in img_list:
+        for img in self.acc_img:
             # ~~~~~~~~~~~~~~~~ Start Loop ~~~~~~~~~~~~~~~~
             cur_name = os.path.basename(os.path.normpath(img))
             out_name = str(img_num).zfill(6)+'.jpg'
@@ -121,21 +115,22 @@ class Pipeline():
 
             #assemble dict ~~~
             self.add_entry(img, out_name, self.img_dict)
-            acc_folder = os.path.join(output_path, "accepted")
-            acc_img_path = os.path.join(acc_folder, out_name)
 
             #Image handling ~~~
             img_standard = self.img_standardize(img, size)
-            self.display_img.append(img_standard)
-            #img_standard.save(acc_img_path)
-            shutil.move(img, os.path.join(accept_path, out_name))
+            try:
+                img_standard.save(os.path.join(accept_path, out_name))
+            except:
+                print("Converting", cur_name, "to .jpg format...")
+                img_standard = img_standard.convert("RGB")
+                # Save-able as jpg now!
+                img_standard.save(os.path.join(accept_path, out_name))
 
-            #Path handling ~~~
-            self.acc_img.append(acc_img_path)
+            self.display_img.append(img_standard)
+            os.remove(os.path.join(accept_path, cur_name))
 
             #Update valid img number
-            print("Assessing input", str(img_num), " of ", \
-                str(len(self.allfiles_input)), cur_name)
+            print("Standardizing image", str(img_num), " of ", str(len(self.acc_img)), cur_name)
             img_num += 1
             # ~~~~~~~~~~~~~~~~ End Loop ~~~~~~~~~~~~~~~~
 
@@ -154,7 +149,7 @@ class Pipeline():
         # Returns dictionary
         return self.img_dict
 
-#~~~~~~~~~~~~ Helper functions ~~~~~~~~~~~~~~~~~
+    #~~~~~~~~~~~~ Helper functions ~~~~~~~~~~~~~~~~~
     def reject_image(self, criteria, input_path, output_path):
         """
         All-encompassing function handling unusable images. Desired values for
@@ -174,7 +169,7 @@ class Pipeline():
         """
 
         reject_path = os.path.join(output_path, "rejected")
-        accept_path = os.path.join(output_path, "accepted") #temporary
+        accept_path = os.path.join(output_path, "accepted")
 
         input_list = []
         self.walk(input_path, input_list)
@@ -196,8 +191,6 @@ class Pipeline():
                 pbar.update()
             pbar.close()
 
-            return os.listdir(accept_path)
-
         if criteria == '1': # High resolution?
             print("Checking for low resolution...")
             pbar = tqdm(input_list)
@@ -215,14 +208,10 @@ class Pipeline():
                     print(cur_name, " REJECTED.", " Warning: Resolution too low.")
                     shutil.move(cur_img, os.path.join(reject_path, 'rjres_'+cur_name))
                 else:
-                    try:
-                        shutil.move(cur_img, os.path.join(accept_path, cur_name))
-                    except:
-                        print("Image exists")
+                    shutil.move(cur_img, os.path.join(accept_path, cur_name))
+
                 pbar.update()
             pbar.close()
-
-            return os.listdir(accept_path)
 
         if criteria == '2': # Not grayscale?
             pbar = tqdm(input_list)
@@ -234,31 +223,23 @@ class Pipeline():
                     print(cur_name, "REJECTED.", "Warning: Grayscale image.")
                     shutil.move(cur_img, os.path.join(reject_path, 'rjgray_'+cur_name))
                 else:
-                    try:
-                        shutil.move(cur_img, os.path.join(accept_path, cur_name))
-                    except:
-                        print("Image exists")
+                    shutil.move(cur_img, os.path.join(accept_path, cur_name))
+
                 pbar.update()
             pbar.close()
 
-            return os.listdir(accept_path)
-
         if criteria == '3': # Blurry?
             self.blur_detection(input_path, output_path, thresh=self.blur_thresh, split=True, v=False)
-            return os.listdir(accept_path)
 
         if criteria == '4': # Text ?
             self.text_detection(input_path, output_path, confidence=0.99, allowed_area = 0.07)
-            return os.listdir(accept_path)
 
         if criteria == '5': #Faces?
             self.face_detection(input_path, output_path)
-            return os.listdir(accept_path)
 
-            return os.listdir(accept_path)
+        # Passable images for the various criteria
+        return os.listdir(accept_path)
 
-        #Usable image
-        return []
 
     def walk(self, input_path, file_list):
         """
@@ -283,17 +264,19 @@ class Pipeline():
 
         return file_list
 
-    def display_accepted(self, displayimg):
+    def display_accepted(self, display_img):
         """
           Displays images that passed the acceptance criteria.
 
           Params:
             displayimg: List of Image objects to plot.
         """
-        plt.figure(figsize=(10,10))
-        for i in range(len(displayimg)):
-          plt.subplot(len(displayimg), len(displayimg), i+1)
+        plt.figure(figsize=(50,50))
+        assert(len(display_img) == len(self.acc_img))
+        for i in range(len(display_img)):
+          plt.subplot(len(display_img), len(display_img), i+1)
           plt.axis('off')
+
         plt.show()
 
     def img_standardize(self, cur_img, size):
@@ -336,7 +319,6 @@ class Pipeline():
         """
         reject_path = os.path.join(output_path, "rejected")
         accept_path = os.path.join(output_path, "accepted")
-
         blurry_path = reject_path
         sharp_path = accept_path
 
@@ -346,30 +328,30 @@ class Pipeline():
 
         if split:
             print("Identifying blurry images...")
-
         lpcs = []
         pbar = tqdm(input_list)
+        # ~~~~~~~~~~~~~~~ Start loop ~~~~~~~~~~~~~~~
         for img_path in input_list:
             cur_name = os.path.basename(os.path.normpath(img_path))
 
             if v:
                 print("Processing %s" % img_path)
 
-            try:
-                img_cv2 = cv2.imread(img_path)
-                img_gray = cv2.cvtColor(img_cv2, cv2.COLOR_BGR2GRAY)
-                lpc = cv2.Laplacian(img_gray, cv2.CV_64F).var()
-                lpcs.append(lpc)
+            img_cv2 = cv2.imread(img_path)
+            img_gray = cv2.cvtColor(img_cv2, cv2.COLOR_BGR2GRAY)
+            lpc = cv2.Laplacian(img_gray, cv2.CV_64F).var()
+            lpcs.append(lpc)
 
-                if v: print(lpc)
-                if split:
-                    if lpc >= thresh:
-                        cv2.imwrite(os.path.join(sharp_path, cur_name), img_cv2)
-                    else:
-                        print(cur_name, " REJECTED.", " Warning: Blurry image.")
-                        cv2.imwrite(os.path.join(blurry_path, 'rjblur_'+cur_name), img_cv2)
-            except:
-                if v: print("NOTE: " + cur_name + " is not an image. Continuing.")
+            if v: print(lpc)
+            if split:
+                if lpc >= thresh:
+                    cv2.imwrite(os.path.join(sharp_path, cur_name), img_cv2)
+                else:
+                    print(cur_name, " REJECTED.", " Warning: Blurry image.")
+                    cv2.imwrite(os.path.join(blurry_path, 'rjblur_'+cur_name), img_cv2)
+                    os.remove(os.path.join(sharp_path, cur_name))
+
+        # ~~~~~~~~~~~~~~~ End loop ~~~~~~~~~~~~~~~
             pbar.update()
         pbar.close()
 
@@ -396,7 +378,6 @@ class Pipeline():
          'acceptable')), exist_ok=True)
         os.makedirs(os.path.join(os.path.join(text_path,\
          'rejectable')), exist_ok=True)
-
         reject_path = os.path.join(output_path, "rejected")
         accept_path = os.path.join(output_path, "accepted")
 
@@ -407,8 +388,6 @@ class Pipeline():
         'frozen_east_text_detection.pb')
 
         print("Identifying text in images...")
-        #Loop thru input_list, detect text
-
         pbar = tqdm(input_list)
         for cur_img in input_list:
             cur_name = os.path.basename(os.path.normpath(cur_img))
@@ -501,10 +480,7 @@ class Pipeline():
                 cv2.imwrite(os.path.join(os.path.join(text_path, 'rejectable'), \
                     cur_name), img_orig)
             else:
-                try:
-                    shutil.move(cur_img, os.path.join(accept_path, cur_name))
-                except:
-                    print("File unmoved")
+                shutil.move(cur_img, os.path.join(accept_path, cur_name))
                 cv2.imwrite(os.path.join(os.path.join(text_path, 'acceptable'), \
                     cur_name), img_orig)
 
@@ -532,10 +508,7 @@ class Pipeline():
                 print(cur_name," REJECTED.", " Warning: Faces detected.")
                 shutil.move(cur_img, os.path.join(reject_path, 'rjface_'+cur_name))
             else:
-                try:
-                    shutil.move(cur_img, os.path.join(accept_path, cur_name))
-                except:
-                    print("Image exists")
+                shutil.move(cur_img, os.path.join(accept_path, cur_name))
 
             pbar.update()
         pbar.close()
@@ -612,7 +585,7 @@ class Pipeline():
             f.write('\n')
 
             f.write('Total execution time: %s' \
-                % str((self.end-self.start)/60) + 'minutes')
+                % str((self.end-self.start)/60) + ' minutes')
             f.write('\n')
             f.write('\n')
 

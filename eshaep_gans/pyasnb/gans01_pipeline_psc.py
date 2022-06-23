@@ -37,8 +37,8 @@ prefix = '/home/hume-users/leebri2n/Documents/'
 #proj_path = os.path.join(os.path.join(prefix, 'hume-eshaep'), 'eshaep_gans')
 #data_path = os.path.join(prefix, 'data')
 proj_path = os.path.join(os.path.join(prefix, 'hume-eshaep'), 'eshaep_gans')
-data_path = os.path.join(prefix, 'data')
 data_path = os.path.join(prefix, 'testdata')
+data_path = os.path.join(prefix, 'data')
 
 print('Path to project files: {}'.format(proj_path))
 print('Path to data files: {}'.format(data_path))
@@ -96,6 +96,15 @@ class Pipeline():
 
         accept_path = os.path.join(output_path, 'accepted')
         reject_path = os.path.join(output_path, 'rejected')
+
+        try:
+            shutil.rmtree(accept_path)
+            shutil.rmtree(reject_path)
+        except:
+            print("Director(ies) not found! Creating new output folders...")
+
+        os.makedirs(accept_path, exist_ok=True)
+        os.makedirs(reject_path, exist_ok=True)
 
         # ~~~~~~~~~~~~~ Rejection criteria ~~~~~~~~~~~~~
         self.reject_image('0', input_path, output_path)
@@ -326,8 +335,7 @@ class Pipeline():
         self.walk(input_path, input_list)
         input_list.sort()
 
-        if split:
-            print("Identifying blurry images...")
+        print("Identifying blurry images...")
         lpcs = []
         pbar = tqdm(input_list)
         # ~~~~~~~~~~~~~~~ Start loop ~~~~~~~~~~~~~~~

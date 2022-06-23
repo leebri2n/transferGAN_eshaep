@@ -38,6 +38,7 @@ prefix = '/home/hume-users/leebri2n/Documents/'
 #data_path = os.path.join(prefix, 'data')
 proj_path = os.path.join(os.path.join(prefix, 'hume-eshaep'), 'eshaep_gans')
 data_path = os.path.join(prefix, 'data')
+data_path = os.path.join(prefix, 'testdata')
 
 print('Path to project files: {}'.format(proj_path))
 print('Path to data files: {}'.format(data_path))
@@ -75,15 +76,11 @@ class Pipeline():
         self.input_formats = set() #str
         self.img_dict = dict()
 
-        self.start = datetime.now()
-        self.end = datetime.now()
+        self.start = time.time()
+        self.end = time.time()
 
     def execute(self):
         self.start = datetime.now()
-        pipeline.blurry_input = self.blur_detection(self.input_path, v=False)
-        pipeline.text_input = self.text_detection(self.input_path, confidence=0.99, \
-            allow=3, allowed_area=0.07)
-
         pipeline.filter(self.input_path, self.output_path, self.size)
         datetime.now()
 
@@ -97,19 +94,29 @@ class Pipeline():
             output_path: Directory path to output images.
             size: Desired length of square output image's edge.
         """
-        self.walk(self.input_path, self.allfiles_input)
+        self.start = time.time()
+
+        self.walk(self.input_path, self.allfiles_input) #Possibly unnecessary
         print("NUMBER OF POTENTIAL INPUTS: ", str(len(self.allfiles_input)))
 
+        accept_path = os.path.join(output_path, 'accepted')
+        reject_path = os.path.join(output_path, 'rejected')
 
+        self.reject_image('0', input_path, output_path)
+        self.reject_image('1', accept_path, output_path)
+        self.reject_image('2', accept_path, output_path)
+        self.reject_image('3', accept_path, output_path)
+        self.reject_image('4', accept_path, output_path)
+        self.reject_image('5', accept_path, output_path)
 
+        print(len(os.listdir(accept_path)))
         img_num = 0
-        for img in self.allfiles_input:
+        img_list = []
+        self.walk(accept_path, img_list)
+        for img in img_list:
             # ~~~~~~~~~~~~~~~~ Start Loop ~~~~~~~~~~~~~~~~
             cur_name = os.path.basename(os.path.normpath(img))
-
-            if self.reject_image(img, self.input_path, output_path, size): continue
-
-            out_name = str(img_num).zfill(6)+'.png'
+            out_name = str(img_num).zfill(6)+'.jpg'
             print(cur_name, "ACCEPTED as", out_name)
 
             #assemble dict ~~~
@@ -120,7 +127,8 @@ class Pipeline():
             #Image handling ~~~
             img_standard = self.img_standardize(img, size)
             self.display_img.append(img_standard)
-            img_standard.save(acc_img_path)
+            #img_standard.save(acc_img_path)
+            shutil.move(img, os.path.join(accept_path, out_name))
 
             #Path handling ~~~
             self.acc_img.append(acc_img_path)
@@ -130,6 +138,8 @@ class Pipeline():
                 str(len(self.allfiles_input)), cur_name)
             img_num += 1
             # ~~~~~~~~~~~~~~~~ End Loop ~~~~~~~~~~~~~~~~
+
+        self.end = time.time()
 
         #save to json to /output ~~~
         self.writejson(self.output_path)
@@ -145,7 +155,7 @@ class Pipeline():
         return self.img_dict
 
 #~~~~~~~~~~~~ Helper functions ~~~~~~~~~~~~~~~~~
-    def reject_image(self, criteria, cur_img, input_path, output_path, size):
+    def reject_image(self, criteria, input_path, output_path):
         """
         All-encompassing function handling unusable images. Desired values for
         various thresholds can be tweaked. See: valid extensions, dimension minima,
@@ -162,71 +172,93 @@ class Pipeline():
         Returns: Boolean
           True if the image should be rejected, and False if the image can be used.
         """
+
         reject_path = os.path.join(output_path, "rejected")
         accept_path = os.path.join(output_path, "accepted") #temporary
-        cur_name = os.path.basename(os.path.normpath(cur_img))
 
-        if criteria == '1':
-            return True
+        input_list = []
+        self.walk(input_path, input_list)
 
+        if criteria == '0': # Is image?
+            print("Identifying non-image files...")
+            pbar = tqdm(input_list)
+            for cur_img in input_list:
+                cur_name = os.path.basename(os.path.normpath(cur_img))
+                cur_ext = os.path.splitext(cur_img)[1]
 
-        #Criteria 1: Is an image
-        cur_ext = os.path.splitext(cur_img)[1]
-        self.input_formats.add(cur_ext)
-        start = time.time()
-        if cur_ext not in self.valid_ext:
-            print(cur_name, " REJECTED.", " Warning: Not an image.")
-            shutil.copy(cur_img, os.path.join(reject_path, 'rjnotim_'+cur_name))
-            return True
+                self.input_formats.add(cur_ext)
 
-        #Criteria 2: Sufficiently high resolution
-        img = Image.open(cur_img)
-        width, height = img.size
+                if cur_ext not in self.valid_ext:
+                    print(cur_name, " REJECTED.", " Warning: Not an image.")
+                    shutil.copy(cur_img, os.path.join(reject_path, 'rjnotim_'+cur_name))
+                else:
+                    shutil.copy(cur_img, os.path.join(accept_path, cur_name))
+                pbar.update()
+            pbar.close()
 
-        #Is a valid image, potentially rejectable
-        self.imgfiles_input.append(cur_img)
-        self.input_widths.append(width)
-        self.input_heights.append(height)
-        if (width <= 0.8*size) or (height <= int(0.8*size)):
-            print(cur_name, " REJECTED.", " Warning: Resolution too low.")
-            shutil.copy(cur_img, os.path.join(reject_path, 'rjimg_'+cur_name))
-            return True
-        else:
-            print(cur_name, " REJECTED.", " Warning: Resolution too low.")
-            shutil.copy(cur_img, os.path.join(reject_path, 'rjimg_'+cur_name))
+            return os.listdir(accept_path)
 
-        #Criteria 3: Is not in file path "blurry"
-        if cur_name in self.blurry_input:
-            print(cur_name, " REJECTED.", " Warning: Too blurry.")
-            shutil.copy(cur_img, os.path.join(reject_path, 'rjblurry_'+cur_name))
-            return True
+        if criteria == '1': # High resolution?
+            print("Checking for low resolution...")
+            pbar = tqdm(input_list)
 
-        #Criteria 6: Grayscale image
-        img_info = cv2.imread(cur_img)
-        if len(img_info.shape) < 2:
-            print(cur_name, "REJECTED.", "Warning: Grayscale image.")
-            shutil.copy(cur_img, os.path.join(reject_path, 'rjgray_'+cur_name))
-            return True
+            for cur_img in input_list:
+                cur_name = os.path.basename(os.path.normpath(cur_img))
+                img = Image.open(cur_img)
+                width, height = img.size
 
-        #Criteria 4: No human faces
-        cur_img_fr = fr.load_image_file(cur_img)
-        face_landmarks = fr.face_locations(cur_img_fr, model='hog')
-        if len(face_landmarks) != 0:
-            print(cur_name," REJECTED.", " Warning: Faces detected.")
-            shutil.copy(cur_img, os.path.join(reject_path, 'rjface_'+cur_name))
-            return True
+                self.imgfiles_input.append(cur_img)
+                self.input_widths.append(width)
+                self.input_heights.append(height)
 
+                if (width <= 0.8*self.size) or (height <= int(0.8*self.size)):
+                    print(cur_name, " REJECTED.", " Warning: Resolution too low.")
+                    shutil.move(cur_img, os.path.join(reject_path, 'rjres_'+cur_name))
+                else:
+                    try:
+                        shutil.move(cur_img, os.path.join(accept_path, cur_name))
+                    except:
+                        print("Image exists")
+                pbar.update()
+            pbar.close()
 
-        #Criteria 7: Text
-        start = time.time()
-        if cur_name in self.text_input:
-            print(cur_name, "REJECTED.", "Warning: Text detected.")
-            shutil.copy(cur_img, os.path.join(reject_path, 'rjtext_'+cur_name))
-            return True
-        end = time.time()
+            return os.listdir(accept_path)
+
+        if criteria == '2': # Not grayscale?
+            pbar = tqdm(input_list)
+            for cur_img in input_list:
+                cur_name = os.path.basename(os.path.normpath(cur_img))
+                img = cv2.imread(cur_img)
+
+                if len(img.shape) < 2:
+                    print(cur_name, "REJECTED.", "Warning: Grayscale image.")
+                    shutil.move(cur_img, os.path.join(reject_path, 'rjgray_'+cur_name))
+                else:
+                    try:
+                        shutil.move(cur_img, os.path.join(accept_path, cur_name))
+                    except:
+                        print("Image exists")
+                pbar.update()
+            pbar.close()
+
+            return os.listdir(accept_path)
+
+        if criteria == '3': # Blurry?
+            self.blur_detection(input_path, output_path, thresh=self.blur_thresh, split=True, v=False)
+            return os.listdir(accept_path)
+
+        if criteria == '4': # Text ?
+            self.text_detection(input_path, output_path, confidence=0.99, allowed_area = 0.07)
+            return os.listdir(accept_path)
+
+        if criteria == '5': #Faces?
+            self.face_detection(input_path, output_path)
+            return os.listdir(accept_path)
+
+            return os.listdir(accept_path)
 
         #Usable image
-        return False
+        return []
 
     def walk(self, input_path, file_list):
         """
@@ -287,7 +319,7 @@ class Pipeline():
         img = img.resize((size,size))
         return img
 
-    def blur_detection(self, input_path, thresh=30, split=True, v=True):
+    def blur_detection(self, input_path, output_path, thresh=30, split=True, v=True):
         """
           A function that detects and designates images as having an unacceptable
           amount of blurring.
@@ -302,20 +334,18 @@ class Pipeline():
           Returns:
             A list of image NAMES classified as blurry. MAKE PATHS?
         """
-        class_path = os.path.join(input_path, 'classifications')
-        blurry_path = os.path.join(class_path, 'blurry')
-        sharp_path = os.path.join(class_path, 'sharp')
+        reject_path = os.path.join(output_path, "rejected")
+        accept_path = os.path.join(output_path, "accepted")
+
+        blurry_path = reject_path
+        sharp_path = accept_path
 
         input_list = []
         self.walk(input_path, input_list)
         input_list.sort()
 
         if split:
-            shutil.rmtree(blurry_path)
-            shutil.rmtree(sharp_path)
-            os.makedirs(blurry_path, exist_ok=True)
-            os.makedirs(sharp_path, exist_ok=True)
-            print("Assembling list of blurred images...")
+            print("Identifying blurry images...")
 
         lpcs = []
         pbar = tqdm(input_list)
@@ -336,16 +366,16 @@ class Pipeline():
                     if lpc >= thresh:
                         cv2.imwrite(os.path.join(sharp_path, cur_name), img_cv2)
                     else:
-                        cv2.imwrite(os.path.join(blurry_path, cur_name), img_cv2)
+                        print(cur_name, " REJECTED.", " Warning: Blurry image.")
+                        cv2.imwrite(os.path.join(blurry_path, 'rjblur_'+cur_name), img_cv2)
             except:
                 if v: print("NOTE: " + cur_name + " is not an image. Continuing.")
             pbar.update()
         pbar.close()
 
-        #return lpcs
-        return os.listdir(blurry_path)
+        return os.listdir(accept_path)
 
-    def text_detection(self, input_list, confidence, allowed_area=0.1, allow=1, resize=640):
+    def text_detection(self, input_path, output_path, confidence, allowed_area=0.1, resize=640):
         """
           Detects and recognizes allged text that appears in images.
 
@@ -357,14 +387,18 @@ class Pipeline():
           Returns:
             The number of distinct text objects recognized.
         """
-        class_path = os.path.join(input_path, 'classifications')
+        # Testing purposes
+        class_path = os.path.join(self.input_path, 'classifications')
         text_path = os.path.join(class_path, 'textdetection')
-        shutil.rmtree(text_path)
+        #shutil.rmtree(text_path)
         os.makedirs(text_path, exist_ok=True)
         os.makedirs(os.path.join(os.path.join(text_path,\
-         'unacceptable')), exist_ok=True)
-        os.makedirs(os.path.join(os.path.join(text_path,\
          'acceptable')), exist_ok=True)
+        os.makedirs(os.path.join(os.path.join(text_path,\
+         'rejectable')), exist_ok=True)
+
+        reject_path = os.path.join(output_path, "rejected")
+        accept_path = os.path.join(output_path, "accepted")
 
         input_list = []
         self.walk(input_path, input_list)
@@ -377,8 +411,6 @@ class Pipeline():
 
         pbar = tqdm(input_list)
         for cur_img in input_list:
-
-
             cur_name = os.path.basename(os.path.normpath(cur_img))
             wid_new = resize
             hei_new = resize #Adjustable
@@ -464,15 +496,51 @@ class Pipeline():
             #print("TEXT TO IMAGE RATIO:", text_area/total_area)
 
             if text_area / total_area >= allowed_area or len(rects) > 10:
-                cv2.imwrite(os.path.join(os.path.join(text_path, 'unacceptable'), \
+                print(cur_name, " REJECTED.", " Warning: Significant text detected.")
+                shutil.move(cur_img, os.path.join(reject_path, 'rjtext_'+cur_name))
+                cv2.imwrite(os.path.join(os.path.join(text_path, 'rejectable'), \
                     cur_name), img_orig)
             else:
+                try:
+                    shutil.move(cur_img, os.path.join(accept_path, cur_name))
+                except:
+                    print("File unmoved")
                 cv2.imwrite(os.path.join(os.path.join(text_path, 'acceptable'), \
                     cur_name), img_orig)
+
             pbar.update()
         pbar.close()
 
-        return os.listdir(text_path)
+        return os.listdir(accept_path)
+
+    def face_detection(self, input_path, output_path):
+        reject_path = os.path.join(output_path, "rejected")
+        accept_path = os.path.join(output_path, "accepted") #temporary
+
+        input_list = []
+        self.walk(input_path, input_list)
+        input_list.sort()
+
+        print("Identifying faces in images...")
+        pbar = tqdm(input_list)
+        for cur_img in input_list:
+            cur_name = os.path.basename(os.path.normpath(cur_img))
+            cur_img_fr = fr.load_image_file(cur_img)
+            face_landmarks = fr.face_locations(cur_img_fr, model='hog')
+
+            if len(face_landmarks) != 0:
+                print(cur_name," REJECTED.", " Warning: Faces detected.")
+                shutil.move(cur_img, os.path.join(reject_path, 'rjface_'+cur_name))
+            else:
+                try:
+                    shutil.move(cur_img, os.path.join(accept_path, cur_name))
+                except:
+                    print("Image exists")
+
+            pbar.update()
+        pbar.close()
+
+        return os.listdir(accept_path)
 
     def writejson(self, output_path):
         try:
@@ -577,9 +645,9 @@ output_path = os.path.join(data_path, 'output')
 print("TIME OF EXECUTION", datetime.now())
 
 pipeline = Pipeline(proj_path=proj_path, input_folder=input_path, output_folder=output_path, \
-    size=1024, blur_thresh=60, text_thresh=0.99)
+    size=1024, blur_thresh=40, text_thresh=0.99)
 
-pipeline.execute()
+pipeline.filter(input_path = input_path, output_path = output_path, size=1024)
 
 end_t = time.time()#~~~~~~~~~~~~~~~~~~~~~~~
 

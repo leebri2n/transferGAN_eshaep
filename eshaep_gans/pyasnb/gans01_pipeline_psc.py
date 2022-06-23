@@ -19,6 +19,7 @@ import imutils
 import time
 from imutils.object_detection import non_max_suppression
 #from google.colab.patches import cv2_imshow
+from tqdm import tqdm
 
 from datetime import datetime
 import warnings
@@ -74,6 +75,18 @@ class Pipeline():
         self.input_formats = set() #str
         self.img_dict = dict()
 
+        self.start = datetime.now()
+        self.end = datetime.now()
+
+    def execute(self):
+        self.start = datetime.now()
+        pipeline.blurry_input = self.blur_detection(self.input_path, v=False)
+        pipeline.text_input = self.text_detection(self.input_path, confidence=0.99, \
+            allow=3, allowed_area=0.07)
+
+        pipeline.filter(self.input_path, self.output_path, self.size)
+        datetime.now()
+
     def filter(self, input_path, output_path, size):
         """
           Given input data files, processes and sorts them according to usability.
@@ -86,6 +99,8 @@ class Pipeline():
         """
         self.walk(self.input_path, self.allfiles_input)
         print("NUMBER OF POTENTIAL INPUTS: ", str(len(self.allfiles_input)))
+
+
 
         img_num = 0
         for img in self.allfiles_input:
@@ -130,7 +145,7 @@ class Pipeline():
         return self.img_dict
 
 #~~~~~~~~~~~~ Helper functions ~~~~~~~~~~~~~~~~~
-    def reject_image(self, cur_img, input_path, output_path, size):
+    def reject_image(self, criteria, cur_img, input_path, output_path, size):
         """
         All-encompassing function handling unusable images. Desired values for
         various thresholds can be tweaked. See: valid extensions, dimension minima,
@@ -148,7 +163,12 @@ class Pipeline():
           True if the image should be rejected, and False if the image can be used.
         """
         reject_path = os.path.join(output_path, "rejected")
+        accept_path = os.path.join(output_path, "accepted") #temporary
         cur_name = os.path.basename(os.path.normpath(cur_img))
+
+        if criteria == '1':
+            return True
+
 
         #Criteria 1: Is an image
         cur_ext = os.path.splitext(cur_img)[1]
@@ -157,14 +177,9 @@ class Pipeline():
         if cur_ext not in self.valid_ext:
             print(cur_name, " REJECTED.", " Warning: Not an image.")
             shutil.copy(cur_img, os.path.join(reject_path, 'rjnotim_'+cur_name))
-            #os.rename(os.path.join(reject_path, cur_name), \
-                #os.path.join(reject_path, 'rjnotimg_'+cur_name))
             return True
-        end = time.time()
-        #print(cur_name, "TIME FOR FORMAT ELAPSED: ", str(end-start))
 
         #Criteria 2: Sufficiently high resolution
-        start = time.time()
         img = Image.open(cur_img)
         width, height = img.size
 
@@ -174,59 +189,41 @@ class Pipeline():
         self.input_heights.append(height)
         if (width <= 0.8*size) or (height <= int(0.8*size)):
             print(cur_name, " REJECTED.", " Warning: Resolution too low.")
-            shutil.copy(cur_img, os.path.join(reject_path, 'rjres_'+cur_name))
-            #os.rename(os.path.join(reject_path, cur_name), \
-                #os.path.join(reject_path, 'rjres_'+cur_name))
+            shutil.copy(cur_img, os.path.join(reject_path, 'rjimg_'+cur_name))
             return True
-        end = time.time()
-        #print(cur_name, "TIME FOR RESOLUTION ELAPSED: ", str(end-start))
+        else:
+            print(cur_name, " REJECTED.", " Warning: Resolution too low.")
+            shutil.copy(cur_img, os.path.join(reject_path, 'rjimg_'+cur_name))
 
         #Criteria 3: Is not in file path "blurry"
-        start = time.time()
         if cur_name in self.blurry_input:
             print(cur_name, " REJECTED.", " Warning: Too blurry.")
             shutil.copy(cur_img, os.path.join(reject_path, 'rjblurry_'+cur_name))
-            #os.rename(os.path.join(reject_path, cur_name), \
-                #os.path.join(reject_path, 'rjblurry_'+cur_name))
             return True
-        end = time.time()
-        #print(cur_name, "TIME FOR BLURRY ELAPSED: ", str(end-start))
 
         #Criteria 6: Grayscale image
-        start = time.time()
         img_info = cv2.imread(cur_img)
         if len(img_info.shape) < 2:
             print(cur_name, "REJECTED.", "Warning: Grayscale image.")
             shutil.copy(cur_img, os.path.join(reject_path, 'rjgray_'+cur_name))
-            #os.rename(os.path.join(reject_path, cur_name), \
-                #os.path.join(reject_path, 'rjgrayscale_'+cur_name))
             return True
-        end = time.time()
-        #print(cur_name, "TIME FOR GRAYSCALE ELAPSED: ", str(end-start))
 
         #Criteria 4: No human faces
-        start = time.time()
         cur_img_fr = fr.load_image_file(cur_img)
         face_landmarks = fr.face_locations(cur_img_fr, model='hog')
         if len(face_landmarks) != 0:
             print(cur_name," REJECTED.", " Warning: Faces detected.")
             shutil.copy(cur_img, os.path.join(reject_path, 'rjface_'+cur_name))
-            #os.rename(os.path.join(reject_path, cur_name), \
-              #os.path.join(reject_path, 'rjface_'+cur_name))
             return True
-        end = time.time()
-        #print(cur_name, "TIME FOR FACE ELAPSED: ", str(end-start))
+
 
         #Criteria 7: Text
         start = time.time()
         if cur_name in self.text_input:
             print(cur_name, "REJECTED.", "Warning: Text detected.")
             shutil.copy(cur_img, os.path.join(reject_path, 'rjtext_'+cur_name))
-            #os.rename(os.path.join(reject_path, cur_name), \
-              #os.path.join(reject_path, 'rjtext_'+cur_name))
             return True
         end = time.time()
-        #print(cur_name, "TIME FOR TEXT ELAPSED: ", str(end-start))
 
         #Usable image
         return False
@@ -318,13 +315,16 @@ class Pipeline():
             shutil.rmtree(sharp_path)
             os.makedirs(blurry_path, exist_ok=True)
             os.makedirs(sharp_path, exist_ok=True)
+            print("Assembling list of blurred images...")
 
-        print("Assembling list of blurred images...")
         lpcs = []
+        pbar = tqdm(input_list)
         for img_path in input_list:
             cur_name = os.path.basename(os.path.normpath(img_path))
+
             if v:
-                print(cur_name, img_path)
+                print("Processing %s" % img_path)
+
             try:
                 img_cv2 = cv2.imread(img_path)
                 img_gray = cv2.cvtColor(img_cv2, cv2.COLOR_BGR2GRAY)
@@ -339,6 +339,8 @@ class Pipeline():
                         cv2.imwrite(os.path.join(blurry_path, cur_name), img_cv2)
             except:
                 if v: print("NOTE: " + cur_name + " is not an image. Continuing.")
+            pbar.update()
+        pbar.close()
 
         #return lpcs
         return os.listdir(blurry_path)
@@ -372,7 +374,11 @@ class Pipeline():
 
         print("Identifying text in images...")
         #Loop thru input_list, detect text
+
+        pbar = tqdm(input_list)
         for cur_img in input_list:
+
+
             cur_name = os.path.basename(os.path.normpath(cur_img))
             wid_new = resize
             hei_new = resize #Adjustable
@@ -463,6 +469,8 @@ class Pipeline():
             else:
                 cv2.imwrite(os.path.join(os.path.join(text_path, 'acceptable'), \
                     cur_name), img_orig)
+            pbar.update()
+        pbar.close()
 
         return os.listdir(text_path)
 
@@ -502,33 +510,45 @@ class Pipeline():
         log_path = os.path.join(self.proj_path, 'logs')
         with open(os.path.join(log_path, \
             (datetime_exc.strftime("%m%d%Y_%H%M%S")))+'log.txt', 'w') as f:
+            #START TEXT
             f.write(join("Latest successful execution finished at:", \
                 datetime_exc.strftime("%m/%d/%Y, %H:%M:%S")))
             f.write('\n')
-
-            f.write(join("Number of valid images:", str(num)))
-            f.write('\n')
             f.write('\n')
 
-            f.write(join('Minimum input width:', str(minw)))
-            f.write('\n')
-            f.write(join('Maximum input width:', str(maxw)))
+            f.write("Number of valid images: %s" % str(num))
             f.write('\n')
             f.write('\n')
 
-            f.write(join('Minimum input height:', str(minh)))
+            f.write('Minimum input width: %s' % str(minw))
             f.write('\n')
-            f.write(join('Maximum input height:', str(maxh)))
-            f.write('\n')
-            f.write('\n')
-
-            f.write(join('Average input width:', str(avw)))
-            f.write('\n')
-            f.write(join('Average input height:', str(avh)))
+            f.write('Maximum input width: %s' % str(maxw))
             f.write('\n')
             f.write('\n')
 
-            f.write(join('Percentage of accepted images:', join(str(percentage*100), '%')))
+            f.write('Minimum input height: %s' % str(minh))
+            f.write('\n')
+            f.write('Maximum input height: %s' % str(maxh))
+            f.write('\n')
+            f.write('\n')
+
+            f.write('Average input width: %s' % str(avw))
+            f.write('\n')
+            f.write('Average input height: %s' % str(avh))
+            f.write('\n')
+            f.write('\n')
+
+            f.write(join('Percentage of accepted images:', \
+                join(str(percentage*100), '%')))
+            f.write('\n')
+            f.write('\n')
+
+            f.write('Total execution time: %s' \
+                % str((self.end-self.start)/60) + 'minutes')
+            f.write('\n')
+            f.write('\n')
+
+            # END TEXT
             print('log.txt successfully written.')
 
     def add_entry(self, img, img_outname, img_dict):
@@ -550,7 +570,8 @@ class Pipeline():
 
 
 #~~~~~~~~~~~~~~~~~~ Execution ~~~~~~~~~~~~~~~~~~~
-start_t = time.time()
+start_t = time.time()#~~~~~~~~~~~~~~~~
+
 input_path = os.path.join(data_path, 'input')
 output_path = os.path.join(data_path, 'output')
 print("TIME OF EXECUTION", datetime.now())
@@ -558,15 +579,9 @@ print("TIME OF EXECUTION", datetime.now())
 pipeline = Pipeline(proj_path=proj_path, input_folder=input_path, output_folder=output_path, \
     size=1024, blur_thresh=60, text_thresh=0.99)
 
-pipeline.blurry_input = pipeline.blur_detection(input_path, v=False)
-pipeline.text_input = pipeline.text_detection(input_path, confidence=0.99, \
-    allow=3, allowed_area=0.08)
+pipeline.execute()
 
-start = time.time()
-pipeline.filter(input_path, output_path, pipeline.size)
-end = time.time()
+end_t = time.time()#~~~~~~~~~~~~~~~~~~~~~~~
 
-end_t = time.time()
-
-print("FILTERING EXECUTION TIME: ", str((end-start)/60), "MINUTES")
+#print("FILTERING EXECUTION TIME: ", str((end-start)/60), "MINUTES")
 print("TOTAL EXECUTION TIME: ", str((end_t-start_t)/60), "MINUTES")

@@ -1,0 +1,6 @@
+C:\Users\leebr\AppData\Local\R-MINI~1
+C:\Users\leebr\AppData\Local\R-MINI~1\envs\r-reticulate
+C:\Users\leebr\AppData\Local\r-miniconda\envs\r-reticulate
+C:\Users\leebr\anaconda3
+C:\Users\leebr\anaconda3\envs\tf-3
+C:\Users\leebr\anaconda3\envs\gans

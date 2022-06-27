@@ -263,7 +263,7 @@ class Pipeline():
         """
         input_list = os.listdir(input_path)
         for item in input_list:
-            if item == 'classifications':
+            if item == 'classifications' or item == 'displayfolder':
                 continue
 
             if os.path.isdir(os.path.join(input_path,item)):

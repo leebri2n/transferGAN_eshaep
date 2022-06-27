@@ -35,11 +35,11 @@ prefix = 'C:/Users/leebr/Documents/GitHub/'
 customized_path = 'hume2022/eshaep_gans/'
 proj_path = prefix + customized_path
 
-print('Path to data: {}'.format(proj_path))
 
 #TODO: Standardize input/output paths to make more sense.
 
 destination = os.path.join(os.path.join(prefix, 'data'), 'input')
+print('Path to data: {}'.format(destination))
 
 class InstagramScraper():
     """
@@ -108,11 +108,11 @@ class InstagramScraper():
 cls = InstagramScraper(login_user='gram.scrape', login_pass='insta$8scrape88', dest_path=destination)
 print(cls.L.dirname_pattern)
 
-object_tags = ['latteart', 'fighterjet']
+object_tags = ['fighterjet']
 
 start = time.time()
 # ~~~~~~~~~~~~~~~~~~ ENTER SCRAPING SUBJECTS ~~~~~~~~~~~~~~~~~
-cls.download_hashtag_posts(hashtags=object_tags, supercategory='objects', max_count=1000)
+cls.download_hashtag_posts(hashtags=object_tags, supercategory='objects', max_count=400)
 # ~~~~~~~~~~~~~~~~ END SCRAPING ~~~~~~~~~~~~~~~~~~~~~~~~~
 end = time.time()
 

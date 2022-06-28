@@ -37,8 +37,8 @@ prefix = '/home/hume-users/leebri2n/Documents/'
 #proj_path = os.path.join(os.path.join(prefix, 'hume-eshaep'), 'eshaep_gans')
 #data_path = os.path.join(prefix, 'data')
 proj_path = os.path.join(os.path.join(prefix, 'hume-eshaep'), 'eshaep_gans')
-data_path = os.path.join(prefix, 'testdata')
 data_path = os.path.join(prefix, 'data')
+data_path = os.path.join(prefix, 'testdata')
 
 print('Path to project files: {}'.format(proj_path))
 print('Path to data files: {}'.format(data_path))

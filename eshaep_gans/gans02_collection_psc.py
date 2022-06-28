@@ -28,8 +28,8 @@ import csv
 import os
 
 #Append the directory to your python path
-prefix = '/home/hume-users/leebri2n/Documents/'
 prefix = 'C:/Users/leebr/Documents/GitHub/'
+prefix = '/home/hume-users/leebri2n/Documents/'
 
 # modify customized_path
 customized_path = 'hume2022/eshaep_gans/'
@@ -105,14 +105,16 @@ class InstagramScraper():
         print("Scraping job completed. Resetting directory...")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~ SCRAPING JOB ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-cls = InstagramScraper(login_user='gram.scrape', login_pass='insta$8scrape88', dest_path=destination)
+cls = InstagramScraper(login_user='gram.scrape2', login_pass='insta$8scrape88', dest_path=destination)
 print(cls.L.dirname_pattern)
 
-object_tags = ['fighterjet']
+object_tags = ['fighterjet', 'newyorkpizza']
+animal_tags = ['baldeagle', 'bettaphotography']
 
 start = time.time()
 # ~~~~~~~~~~~~~~~~~~ ENTER SCRAPING SUBJECTS ~~~~~~~~~~~~~~~~~
 cls.download_hashtag_posts(hashtags=object_tags, supercategory='objects', max_count=400)
+cls.download_hashtag_posts(hashtags=animal_tags, supercategory='objects', max_count=1000)
 # ~~~~~~~~~~~~~~~~ END SCRAPING ~~~~~~~~~~~~~~~~~~~~~~~~~
 end = time.time()
 

@@ -1,8 +1,8 @@
-leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker build --tag sg2ada:latest .
+docker build --tag stylegan3:latest .
 
-leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker run -itd --name sg2ada_eshaep -v /home/hume-users/leebri2n:/home/hume-users/leebri2n/ -w /home/hume-users/leebri2n sg2ada:latest /bin/bash
+docker run -itd --name sg3-eshaep -v /home/hume-users/leebri2n:/home/hume-users/leebri2n/ -w /home/hume-users/leebri2n sg2ada:latest /bin/bash
 
-docker exec -it sg2ada_eshaep /bin/bash
+docker exec -it sg3-eshaep /bin/bash
 
 python3 generate.py --outdir=out --seeds=0-35 --class=1 \
     --network=https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/cifar10.pkl
@@ -27,4 +27,3 @@ nvidia-cuda-toolkit:
 
 
 pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu113
-

@@ -1,0 +1,2 @@
+python3 train.py --outdir=/home/hume-users/leebri2n/Documents/hume-eshaep/eshaep_gans/stylegan3_snapshot/training-run-trial --cfg=stylegan3-t --data=/home/hume-users/leebri2n/Documents/testoutput.zip --gpus=2 --batch=16 --batch-gpu=4 --gamma=8.2 --mirror=1
+

@@ -1,0 +1,103 @@
+Loading training set...
+
+Num images:  164
+Image shape: [3, 1024, 1024]
+Label shape: [0]
+
+Constructing networks...
+Setting up PyTorch plugin "bias_act_plugin"... Done.
+Setting up PyTorch plugin "filtered_lrelu_plugin"... Done.
+
+Generator                     Parameters  Buffers  Output shape         Datatype
+---                           ---         ---      ---                  ---     
+mapping.fc0                   262656      -        [4, 512]             float32 
+mapping.fc1                   262656      -        [4, 512]             float32 
+mapping                       -           512      [4, 16, 512]         float32 
+synthesis.input.affine        2052        -        [4, 4]               float32 
+synthesis.input               262144      1545     [4, 512, 36, 36]     float32 
+synthesis.L0_36_512.affine    262656      -        [4, 512]             float32 
+synthesis.L0_36_512           2359808     25       [4, 512, 36, 36]     float32 
+synthesis.L1_36_512.affine    262656      -        [4, 512]             float32 
+synthesis.L1_36_512           2359808     25       [4, 512, 36, 36]     float32 
+synthesis.L2_52_512.affine    262656      -        [4, 512]             float32 
+synthesis.L2_52_512           2359808     37       [4, 512, 52, 52]     float32 
+synthesis.L3_52_512.affine    262656      -        [4, 512]             float32 
+synthesis.L3_52_512           2359808     25       [4, 512, 52, 52]     float32 
+synthesis.L4_84_512.affine    262656      -        [4, 512]             float32 
+synthesis.L4_84_512           2359808     37       [4, 512, 84, 84]     float32 
+synthesis.L5_148_512.affine   262656      -        [4, 512]             float32 
+synthesis.L5_148_512          2359808     37       [4, 512, 148, 148]   float16 
+synthesis.L6_148_512.affine   262656      -        [4, 512]             float32 
+synthesis.L6_148_512          2359808     25       [4, 512, 148, 148]   float16 
+synthesis.L7_276_323.affine   262656      -        [4, 512]             float32 
+synthesis.L7_276_323          1488707     37       [4, 323, 276, 276]   float16 
+synthesis.L8_276_203.affine   165699      -        [4, 323]             float32 
+synthesis.L8_276_203          590324      25       [4, 203, 276, 276]   float16 
+synthesis.L9_532_128.affine   104139      -        [4, 203]             float32 
+synthesis.L9_532_128          233984      37       [4, 128, 532, 532]   float16 
+synthesis.L10_1044_81.affine  65664       -        [4, 128]             float32 
+synthesis.L10_1044_81         93393       37       [4, 81, 1044, 1044]  float16 
+synthesis.L11_1044_51.affine  41553       -        [4, 81]              float32 
+synthesis.L11_1044_51         37230       25       [4, 51, 1044, 1044]  float16 
+synthesis.L12_1044_32.affine  26163       -        [4, 51]              float32 
+synthesis.L12_1044_32         14720       25       [4, 32, 1044, 1044]  float16 
+synthesis.L13_1024_32.affine  16416       -        [4, 32]              float32 
+synthesis.L13_1024_32         9248        25       [4, 32, 1024, 1024]  float16 
+synthesis.L14_1024_3.affine   16416       -        [4, 32]              float32 
+synthesis.L14_1024_3          99          1        [4, 3, 1024, 1024]   float16 
+synthesis                     -           -        [4, 3, 1024, 1024]   float32 
+---                           ---         ---      ---                  ---     
+Total                         22313167    2480     -                    -       
+
+Setting up PyTorch plugin "upfirdn2d_plugin"... Done.
+
+Discriminator  Parameters  Buffers  Output shape         Datatype
+---            ---         ---      ---                  ---     
+b1024.fromrgb  128         16       [4, 32, 1024, 1024]  float16 
+b1024.skip     2048        16       [4, 64, 512, 512]    float16 
+b1024.conv0    9248        16       [4, 32, 1024, 1024]  float16 
+b1024.conv1    18496       16       [4, 64, 512, 512]    float16 
+b1024          -           16       [4, 64, 512, 512]    float16 
+b512.skip      8192        16       [4, 128, 256, 256]   float16 
+b512.conv0     36928       16       [4, 64, 512, 512]    float16 
+b512.conv1     73856       16       [4, 128, 256, 256]   float16 
+b512           -           16       [4, 128, 256, 256]   float16 
+b256.skip      32768       16       [4, 256, 128, 128]   float16 
+b256.conv0     147584      16       [4, 128, 256, 256]   float16 
+b256.conv1     295168      16       [4, 256, 128, 128]   float16 
+b256           -           16       [4, 256, 128, 128]   float16 
+b128.skip      131072      16       [4, 512, 64, 64]     float16 
+b128.conv0     590080      16       [4, 256, 128, 128]   float16 
+b128.conv1     1180160     16       [4, 512, 64, 64]     float16 
+b128           -           16       [4, 512, 64, 64]     float16 
+b64.skip       262144      16       [4, 512, 32, 32]     float32 
+b64.conv0      2359808     16       [4, 512, 64, 64]     float32 
+b64.conv1      2359808     16       [4, 512, 32, 32]     float32 
+b64            -           16       [4, 512, 32, 32]     float32 
+b32.skip       262144      16       [4, 512, 16, 16]     float32 
+b32.conv0      2359808     16       [4, 512, 32, 32]     float32 
+b32.conv1      2359808     16       [4, 512, 16, 16]     float32 
+b32            -           16       [4, 512, 16, 16]     float32 
+b16.skip       262144      16       [4, 512, 8, 8]       float32 
+b16.conv0      2359808     16       [4, 512, 16, 16]     float32 
+b16.conv1      2359808     16       [4, 512, 8, 8]       float32 
+b16            -           16       [4, 512, 8, 8]       float32 
+b8.skip        262144      16       [4, 512, 4, 4]       float32 
+b8.conv0       2359808     16       [4, 512, 8, 8]       float32 
+b8.conv1       2359808     16       [4, 512, 4, 4]       float32 
+b8             -           16       [4, 512, 4, 4]       float32 
+b4.mbstd       -           -        [4, 513, 4, 4]       float32 
+b4.conv        2364416     16       [4, 512, 4, 4]       float32 
+b4.fc          4194816     -        [4, 512]             float32 
+b4.out         513         -        [4, 1]               float32 
+---            ---         ---      ---                  ---     
+Total          29012513    544      -                    -       
+
+Setting up augmentation...
+Distributing across 2 GPUs...
+Setting up training phases...
+Exporting sample images...
+Initializing logs...
+Skipping tfevents export: No module named 'tensorboard'
+Training for 25000 kimg...
+

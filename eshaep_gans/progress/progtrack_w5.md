@@ -25,3 +25,10 @@ Week 1:
 - Not many issues encountered
 
 Week 2:
+- Started working with the scraper
+- Finding packages with compatiibility, ease of usage: Instaloader was winner
+  - Alternatives: instagram-scraper missing functionality
+	- Instascrape not easy to users
+
+- Was able to make a scraping script to store hashtag posts, nestable by category, then hashtag
+  - Later would involve testing the waters for scraping limits, etc.

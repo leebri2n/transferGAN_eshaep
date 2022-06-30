@@ -37,8 +37,8 @@ prefix = '/home/hume-users/leebri2n/Documents/'
 #proj_path = os.path.join(os.path.join(prefix, 'hume-eshaep'), 'eshaep_gans')
 #data_path = os.path.join(prefix, 'data')
 proj_path = os.path.join(os.path.join(prefix, 'hume-eshaep'), 'eshaep_gans')
-data_path = os.path.join(prefix, 'data')
 data_path = os.path.join(prefix, 'testdata')
+data_path = os.path.join(prefix, 'data')
 
 print('Path to project files: {}'.format(proj_path))
 print('Path to data files: {}'.format(data_path))
@@ -119,7 +119,13 @@ class Pipeline():
         for img in self.acc_img:
             # ~~~~~~~~~~~~~~~~ Start Loop ~~~~~~~~~~~~~~~~
             cur_name = os.path.basename(os.path.normpath(img))
-            out_name = str(img_num).zfill(6)+'.jpg'
+            new_tag = cur_name.split('-')[0]
+            tag_path = os.path.join(accept_path, new_tag)
+
+            os.makedirs(tag_path, exist_ok=True)
+            file_num = len(os.listdir(tag_path))
+
+            out_name = new_tag+'-'+str(file_num).zfill(6)+'.jpg'
             print(cur_name, "ACCEPTED as", out_name)
 
             #assemble dict ~~~
@@ -128,12 +134,12 @@ class Pipeline():
             #Image handling ~~~
             img_standard = self.img_standardize(img, self.size)
             try:
-                img_standard.save(os.path.join(accept_path, out_name))
+                img_standard.save(os.path.join(tag_path, out_name))
             except:
                 print("Converting", cur_name, "to .jpg format...")
                 img_standard = img_standard.convert("RGB")
                 # Save-able as jpg now!
-                img_standard.save(os.path.join(accept_path, out_name))
+                img_standard.save(os.path.join(tag_path, out_name))
 
             self.display_img.append(img_standard)
             os.remove(os.path.join(accept_path, cur_name))
@@ -187,6 +193,7 @@ class Pipeline():
             print("Identifying non-image files...")
             pbar = tqdm(input_list)
             for cur_img in input_list:
+                cur_tag = os.path.basename(os.path.dirname(cur_img))
                 cur_name = os.path.basename(os.path.normpath(cur_img))
                 cur_ext = os.path.splitext(cur_img)[1]
 
@@ -194,9 +201,9 @@ class Pipeline():
 
                 if cur_ext not in self.valid_ext:
                     print(cur_name, " REJECTED.", " Warning: Not an image.")
-                    shutil.copy(cur_img, os.path.join(reject_path, 'rjnotim_'+cur_name))
+                    shutil.copy(cur_img, os.path.join(reject_path, 'rjnotim_'+cur_tag+'-'+cur_name))
                 else:
-                    shutil.copy(cur_img, os.path.join(accept_path, cur_name))
+                    shutil.copy(cur_img, os.path.join(accept_path, cur_tag+'-'+cur_name))
                 pbar.update()
             pbar.close()
 

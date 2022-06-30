@@ -26,6 +26,8 @@ from itertools import dropwhile, takewhile
 import csv
 import os
 
+#from instascrape import *
+
 #Append the directory to your python path
 prefix = 'C:/Users/leebr/Documents/GitHub/'
 prefix = '/home/hume-users/leebri2n/Documents/'
@@ -107,17 +109,36 @@ class InstagramScraper():
         self.L.dirname_pattern = os.path.join(destination, '')
         print("Scraping job completed. Resetting directory...")
 
+    def download_hashtag_posts_alt(self, hashtags_url=[], supercategory='misc', max_count=25):
+        for tag in hashtags_url:
+            iter = 0
+            limit = max_count
+
+            test_tag = Hashtag(tag)
+            test_tag.scrape()
+            print(test_tag.amount_of_posts)
+
+        print("Scraping job completed.")
+
+
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~ SCRAPING JOB ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 cls = InstagramScraper(login_user='gram.scrape2', login_pass='insta$8scrape88', dest_path=destination)
 print(cls.L.dirname_pattern)
 
 object_tags = ['fighterjet', 'newyorkpizza']
 animal_tags = ['baldeagle', 'bettaphotography']
+test_tag = ['https://www.instagram.com/explore/tags/google/']
 
 start = time.time()
 # ~~~~~~~~~~~~~~~~~~ ENTER SCRAPING SUBJECTS ~~~~~~~~~~~~~~~~~
-cls.download_hashtag_posts(hashtags=object_tags, supercategory='objects', max_count=400)
-cls.download_hashtag_posts(hashtags=animal_tags, supercategory='objects', max_count=1000)
+#cls.download_hashtag_posts(hashtags=object_tags, supercategory='objects', max_count=400)
+#cls.download_hashtag_posts(hashtags=animal_tags, supercategory='objects', max_count=1000)
+
+from instaloader import Hashtag
+Hashtag = Hashtag.from_name(cls.L.context, 'latteart')
+
+
 # ~~~~~~~~~~~~~~~~ END SCRAPING ~~~~~~~~~~~~~~~~~~~~~~~~~
 end = time.time()
 

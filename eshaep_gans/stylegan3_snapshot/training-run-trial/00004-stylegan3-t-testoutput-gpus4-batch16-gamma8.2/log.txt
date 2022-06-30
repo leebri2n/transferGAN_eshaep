@@ -1,9 +1,0 @@
-Loading training set...
-
-Num images:  164
-Image shape: [3, 1024, 1024]
-Label shape: [0]
-
-Constructing networks...
-Setting up PyTorch plugin "bias_act_plugin"... Done.
-Setting up PyTorch plugin "filtered_lrelu_plugin"... Done.

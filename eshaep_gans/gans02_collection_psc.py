@@ -17,7 +17,6 @@ import shutil
 
 import json
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 
 import time
@@ -32,7 +31,7 @@ prefix = 'C:/Users/leebr/Documents/GitHub/'
 prefix = '/home/hume-users/leebri2n/Documents/'
 
 # modify customized_path
-customized_path = 'hume2022/eshaep_gans/'
+customized_path = 'hume-eshaep/eshaep_gans/'
 proj_path = prefix + customized_path
 
 
@@ -57,8 +56,12 @@ class InstagramScraper():
 
         self.post_errors = 0
 
+        self.user = login_user
+        self.passw = login_pass
+        print(self.user)
+        print(self.passw)
         try:
-            self.L.login(login_user, login_pass)
+            self.L.login(self.user, self.passw)
             print("Login successful.")
         except:
             print("Login unsuccessful.")

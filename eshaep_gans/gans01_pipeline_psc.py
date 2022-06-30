@@ -126,7 +126,7 @@ class Pipeline():
             self.add_entry(img, out_name, self.img_dict)
 
             #Image handling ~~~
-            img_standard = self.img_standardize(img, size)
+            img_standard = self.img_standardize(img, self.size)
             try:
                 img_standard.save(os.path.join(accept_path, out_name))
             except:
@@ -626,9 +626,9 @@ output_path = os.path.join(data_path, 'output')
 print("TIME OF EXECUTION", datetime.now())
 
 pipeline = Pipeline(proj_path=proj_path, input_folder=input_path, output_folder=output_path, \
-    size=1024, blur_thresh=40, text_thresh=0.99)
+    size=256, blur_thresh=40, text_thresh=0.99)
 
-pipeline.filter(input_path = input_path, output_path = output_path, size=1024)
+pipeline.filter(input_path = input_path, output_path = output_path, size=256)
 
 end_t = time.time()#~~~~~~~~~~~~~~~~~~~~~~~
 

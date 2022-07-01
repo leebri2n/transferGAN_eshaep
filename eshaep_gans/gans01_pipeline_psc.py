@@ -37,8 +37,8 @@ prefix = '/home/hume-users/leebri2n/Documents/'
 #proj_path = os.path.join(os.path.join(prefix, 'hume-eshaep'), 'eshaep_gans')
 #data_path = os.path.join(prefix, 'data')
 proj_path = os.path.join(os.path.join(prefix, 'hume-eshaep'), 'eshaep_gans')
-data_path = os.path.join(prefix, 'testdata')
 data_path = os.path.join(prefix, 'data')
+data_path = os.path.join(prefix, 'testdata')
 
 print('Path to project files: {}'.format(proj_path))
 print('Path to data files: {}'.format(data_path))
@@ -79,7 +79,7 @@ class Pipeline():
         self.start = time.time()
         self.end = time.time()
 
-    def filter(self, input_path, output_path, size):
+    def filter(self, input_path, output_path, size, v=False):
         """
           Given input data files, processes and sorts them according to usability.
           Main data pipeline function.
@@ -116,6 +116,8 @@ class Pipeline():
 
         self.walk(accept_path, self.acc_img)
         img_num = 0
+        print("Standardizing images...")
+        pbar = tqdm(self.acc_img)
         for img in self.acc_img:
             # ~~~~~~~~~~~~~~~~ Start Loop ~~~~~~~~~~~~~~~~
             cur_name = os.path.basename(os.path.normpath(img))
@@ -126,7 +128,7 @@ class Pipeline():
             file_num = len(os.listdir(tag_path))
 
             out_name = new_tag+'-'+str(file_num).zfill(6)+'.jpg'
-            print(cur_name, "ACCEPTED as", out_name)
+            if v: print(cur_name, "ACCEPTED as", out_name)
 
             #assemble dict ~~~
             self.add_entry(img, out_name, self.img_dict)
@@ -136,7 +138,7 @@ class Pipeline():
             try:
                 img_standard.save(os.path.join(tag_path, out_name))
             except:
-                print("Converting", cur_name, "to .jpg format...")
+                if v: print("Converting", cur_name, "to .jpg format...")
                 img_standard = img_standard.convert("RGB")
                 # Save-able as jpg now!
                 img_standard.save(os.path.join(tag_path, out_name))
@@ -145,10 +147,11 @@ class Pipeline():
             os.remove(os.path.join(accept_path, cur_name))
 
             #Update valid img number
-            print("Standardizing image", str(img_num), " of ", str(len(self.acc_img)), cur_name)
+            if v: print("Standardizing image", str(img_num), " of ", str(len(self.acc_img)), cur_name)
             img_num += 1
+            pbar.update()
             # ~~~~~~~~~~~~~~~~ End Loop ~~~~~~~~~~~~~~~~
-
+        pbar.close()
         self.end = time.time()
 
         #save to json to /output ~~~
@@ -165,7 +168,7 @@ class Pipeline():
         return self.img_dict
 
     #~~~~~~~~~~~~ Helper functions ~~~~~~~~~~~~~~~~~
-    def reject_image(self, criteria, input_path, output_path):
+    def reject_image(self, criteria, input_path, output_path, v=False):
         """
         All-encompassing function handling unusable images. Desired values for
         various thresholds can be tweaked. See: valid extensions, dimension minima,
@@ -200,7 +203,7 @@ class Pipeline():
                 self.input_formats.add(cur_ext)
 
                 if cur_ext not in self.valid_ext:
-                    print(cur_name, " REJECTED.", " Warning: Not an image.")
+                    if v: print(cur_name, " REJECTED.", " Warning: Not an image.")
                     shutil.copy(cur_img, os.path.join(reject_path, 'rjnotim_'+cur_tag+'-'+cur_name))
                 else:
                     shutil.copy(cur_img, os.path.join(accept_path, cur_tag+'-'+cur_name))
@@ -221,7 +224,7 @@ class Pipeline():
                 self.input_heights.append(height)
 
                 if (width <= 0.8*self.size) or (height <= int(0.8*self.size)):
-                    print(cur_name, " REJECTED.", " Warning: Resolution too low.")
+                    if v: print(cur_name, " REJECTED.", " Warning: Resolution too low.")
                     shutil.move(cur_img, os.path.join(reject_path, 'rjres_'+cur_name))
                 else:
                     shutil.move(cur_img, os.path.join(accept_path, cur_name))
@@ -230,13 +233,14 @@ class Pipeline():
             pbar.close()
 
         if criteria == '2': # Not grayscale?
+            print("Checking for grayscale...")
             pbar = tqdm(input_list)
             for cur_img in input_list:
                 cur_name = os.path.basename(os.path.normpath(cur_img))
                 img = cv2.imread(cur_img)
 
                 if len(img.shape) < 2:
-                    print(cur_name, "REJECTED.", "Warning: Grayscale image.")
+                    if v: print(cur_name, "REJECTED.", "Warning: Grayscale image.")
                     shutil.move(cur_img, os.path.join(reject_path, 'rjgray_'+cur_name))
                 else:
                     shutil.move(cur_img, os.path.join(accept_path, cur_name))
@@ -245,13 +249,13 @@ class Pipeline():
             pbar.close()
 
         if criteria == '3': # Blurry?
-            self.blur_detection(input_path, output_path, thresh=self.blur_thresh, split=True, v=False)
+            self.blur_detection(input_path, output_path, v=v, thresh=self.blur_thresh, split=True)
 
         if criteria == '4': # Text ?
-            self.text_detection(input_path, output_path, confidence=0.99, allowed_area = 0.07)
+            self.text_detection(input_path, output_path, v=v, confidence=0.99, allowed_area = 0.07)
 
         if criteria == '5': #Faces?
-            self.face_detection(input_path, output_path)
+            self.face_detection(input_path, output_path, v)
 
         # Passable images for the various criteria
         return os.listdir(accept_path)
@@ -269,8 +273,9 @@ class Pipeline():
                 file_list: A list of pathways to valid files.
         """
         input_list = os.listdir(input_path)
+        skip_list = ['classifications', 'displayfolder', 'zipdatasets']
         for item in input_list:
-            if item == 'classifications' or item == 'displayfolder':
+            if item in skip_list:
                 continue
 
             if os.path.isdir(os.path.join(input_path,item)):
@@ -362,7 +367,7 @@ class Pipeline():
                 if lpc >= thresh:
                     cv2.imwrite(os.path.join(sharp_path, cur_name), img_cv2)
                 else:
-                    print(cur_name, " REJECTED.", " Warning: Blurry image.")
+                    if v: print(cur_name, " REJECTED.", " Warning: Blurry image.")
                     cv2.imwrite(os.path.join(blurry_path, 'rjblur_'+cur_name), img_cv2)
                     os.remove(os.path.join(sharp_path, cur_name))
 
@@ -372,7 +377,7 @@ class Pipeline():
 
         return os.listdir(accept_path)
 
-    def text_detection(self, input_path, output_path, confidence, allowed_area=0.1, resize=640):
+    def text_detection(self, input_path, output_path, confidence, allowed_area=0.1, resize=640, v=False):
         """
           Detects and recognizes allged text that appears in images.
 
@@ -490,7 +495,7 @@ class Pipeline():
             #print("TEXT TO IMAGE RATIO:", text_area/total_area)
 
             if text_area / total_area >= allowed_area or len(rects) > 10:
-                print(cur_name, " REJECTED.", " Warning: Significant text detected.")
+                if v: print(cur_name, " REJECTED.", " Warning: Significant text detected.")
                 shutil.move(cur_img, os.path.join(reject_path, 'rjtext_'+cur_name))
                 cv2.imwrite(os.path.join(os.path.join(text_path, 'rejectable'), \
                     cur_name), img_orig)
@@ -504,7 +509,7 @@ class Pipeline():
 
         return os.listdir(accept_path)
 
-    def face_detection(self, input_path, output_path):
+    def face_detection(self, input_path, output_path, v=False):
         reject_path = os.path.join(output_path, "rejected")
         accept_path = os.path.join(output_path, "accepted") #temporary
 
@@ -520,7 +525,7 @@ class Pipeline():
             face_landmarks = fr.face_locations(cur_img_fr, model='hog')
 
             if len(face_landmarks) != 0:
-                print(cur_name," REJECTED.", " Warning: Faces detected.")
+                if v: print(cur_name," REJECTED.", " Warning: Faces detected.")
                 shutil.move(cur_img, os.path.join(reject_path, 'rjface_'+cur_name))
             else:
                 shutil.move(cur_img, os.path.join(accept_path, cur_name))

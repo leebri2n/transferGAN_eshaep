@@ -22,12 +22,6 @@ from metrics import metric_main
 from torch_utils import training_stats
 from torch_utils import custom_ops
 
-try:
-    torch.cuda.empty_cache()
-    print("Cache emptied")
-except:
-    print("Cache not emptied")
-
 #----------------------------------------------------------------------------
 
 def subprocess_fn(rank, c, temp_dir):

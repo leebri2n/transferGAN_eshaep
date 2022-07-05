@@ -37,8 +37,8 @@ prefix = '/home/hume-users/leebri2n/Documents/'
 #proj_path = os.path.join(os.path.join(prefix, 'hume-eshaep'), 'eshaep_gans')
 #data_path = os.path.join(prefix, 'data')
 proj_path = os.path.join(os.path.join(prefix, 'hume-eshaep'), 'eshaep_gans')
-data_path = os.path.join(prefix, 'data')
 data_path = os.path.join(prefix, 'testdata')
+data_path = os.path.join(prefix, 'data')
 
 print('Path to project files: {}'.format(proj_path))
 print('Path to data files: {}'.format(data_path))
@@ -638,9 +638,9 @@ output_path = os.path.join(data_path, 'output')
 print("TIME OF EXECUTION", datetime.now())
 
 pipeline = Pipeline(proj_path=proj_path, input_folder=input_path, output_folder=output_path, \
-    size=256, blur_thresh=40, text_thresh=0.99)
+    size=512, blur_thresh=40, text_thresh=0.99)
 
-pipeline.filter(input_path = input_path, output_path = output_path, size=256)
+pipeline.filter(input_path = input_path, output_path = output_path, size=512)
 
 end_t = time.time()#~~~~~~~~~~~~~~~~~~~~~~~
 

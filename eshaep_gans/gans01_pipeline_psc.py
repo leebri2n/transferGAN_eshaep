@@ -252,7 +252,7 @@ class Pipeline():
             self.blur_detection(input_path, output_path, v=v, thresh=self.blur_thresh, split=True)
 
         if criteria == '4': # Text ?
-            self.text_detection(input_path, output_path, v=v, confidence=0.99, allowed_area = 0.07)
+            self.text_detection(input_path, output_path, v=v, confidence=0.99, allowed_area = 0.2)
 
         if criteria == '5': #Faces?
             self.face_detection(input_path, output_path, v)

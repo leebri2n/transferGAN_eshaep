@@ -1,17 +1,7 @@
 - point of transfer learning: to have network learn the heavy learning stuff to base
-- small dataset - how will it perform
+- want to see: with a small dataset by some subject, (hashtag) - how will it perform?
 
 next steps:
 - lower learning rate, train for longer? -> more gradual adjustments
 
-tags:
-#corgi-3015
-#tabbycat - 1685
-#beachsunset - 1896
-#fighterjet - 1074
-#lambo - 2035
-#latteart - 1459
-#newyorkpizza - 1172
-#trainphotography - 1794img
 
-total: 14,130 images

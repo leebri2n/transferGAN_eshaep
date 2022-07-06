@@ -26,6 +26,8 @@ from itertools import dropwhile, takewhile
 import csv
 import os
 
+import tqdm
+
 #from instascrape import *
 
 #Append the directory to your python path
@@ -40,6 +42,8 @@ proj_path = prefix + customized_path
 #TODO: Standardize input/output paths to make more sense.
 
 destination = os.path.join(os.path.join(prefix, 'data'), 'input')
+destination = os.path.join(os.path.join(prefix, 'testdata'), 'input')
+
 print('Path to data: {}'.format(destination))
 
 class InstagramScraper():
@@ -79,12 +83,13 @@ class InstagramScraper():
 
         for tag in hashtags:
           iter = 0
+          req = 0
           limit = max_count
           self.L.dirname_pattern = os.path.join(supcat_path, tag)
           print("Scraping for ", tag)
 
           #self.L.download_hashtag(tag, max_count=1000,profile_pic=False, posts=False)
-
+          pbar = tqdm(instaloader.Hashtag.from_name(self.L.context, tag).get_posts_resumable())
           for post in instaloader.Hashtag.from_name(self.L.context, tag).get_posts_resumable():
               try:
                   print("Saving image ", str(iter), " of ", str(limit))
@@ -94,6 +99,8 @@ class InstagramScraper():
                       print("File already exists!")
                   else:
                       iter += 1
+                      pbar.update()
+                  req += 1
               except : #leebri2n
                   self.post_errors += 1
                   print("Error encountered: ", sys.exc_info()[0])
@@ -101,10 +108,11 @@ class InstagramScraper():
 
               if iter == limit:
                   break
-              elif iter % 10 == 0:
+              if req % 10 == 0:
                   print("Sleeping to prevent lockout... (45sec)")
                   time.sleep(45)
 
+        pbar.close()
         #Reset directory
         self.L.dirname_pattern = os.path.join(destination, '')
         print("Scraping job completed. Resetting directory...")
@@ -121,23 +129,20 @@ class InstagramScraper():
         print("Scraping job completed.")
 
 
-
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~ SCRAPING JOB ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-cls = InstagramScraper(login_user='gram.scrape2', login_pass='insta$8scrape88', dest_path=destination)
+cls = InstagramScraper(login_user='gram.scrape', login_pass='insta$8scrape88', dest_path=destination)
 print(cls.L.dirname_pattern)
 
-object_tags = ['fighterjet', 'newyorkpizza']
-animal_tags = ['baldeagle', 'bettaphotography']
+object_tags = ['fighterjet']
+object_tags2 = ['attackhelicopter']
+animal_tags = ['baldeagle', 'bettaphotography', 'mountainphotography']
 test_tag = ['https://www.instagram.com/explore/tags/google/']
 
 start = time.time()
 # ~~~~~~~~~~~~~~~~~~ ENTER SCRAPING SUBJECTS ~~~~~~~~~~~~~~~~~
-#cls.download_hashtag_posts(hashtags=object_tags, supercategory='objects', max_count=400)
-#cls.download_hashtag_posts(hashtags=animal_tags, supercategory='objects', max_count=1000)
-
-from instaloader import Hashtag
-Hashtag = Hashtag.from_name(cls.L.context, 'latteart')
-
+cls.download_hashtag_posts(hashtags=object_tags, supercategory='objects', max_count=600)
+cls.download_hashtag_posts(hashtags=animal_tags, supercategory='animals', max_count=1000)
+cls.download_hashtag_posts(hashtags=object_tags2, supercategory='objects', max_count=1000)
 
 # ~~~~~~~~~~~~~~~~ END SCRAPING ~~~~~~~~~~~~~~~~~~~~~~~~~
 end = time.time()

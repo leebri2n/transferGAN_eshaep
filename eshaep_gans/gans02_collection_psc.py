@@ -26,7 +26,7 @@ from itertools import dropwhile, takewhile
 import csv
 import os
 
-import tqdm
+from tqdm import tqdm
 
 #from instascrape import *
 
@@ -89,7 +89,7 @@ class InstagramScraper():
           print("Scraping for ", tag)
 
           #self.L.download_hashtag(tag, max_count=1000,profile_pic=False, posts=False)
-          pbar = tqdm(instaloader.Hashtag.from_name(self.L.context, tag).get_posts_resumable())
+          pbar = tqdm(total=max_count)
           for post in instaloader.Hashtag.from_name(self.L.context, tag).get_posts_resumable():
               try:
                   print("Saving image ", str(iter), " of ", str(limit))
@@ -134,13 +134,12 @@ cls = InstagramScraper(login_user='gram.scrape', login_pass='insta$8scrape88', d
 print(cls.L.dirname_pattern)
 
 object_tags = ['fighterjet']
-object_tags2 = ['attackhelicopter']
-animal_tags = ['baldeagle', 'bettaphotography', 'mountainphotography']
+object_tags2 = ['flowergarden', 'attackhelicopter']
+animal_tags = ['bettaphotography', 'mountainphotography']
 test_tag = ['https://www.instagram.com/explore/tags/google/']
 
 start = time.time()
 # ~~~~~~~~~~~~~~~~~~ ENTER SCRAPING SUBJECTS ~~~~~~~~~~~~~~~~~
-cls.download_hashtag_posts(hashtags=object_tags, supercategory='objects', max_count=600)
 cls.download_hashtag_posts(hashtags=animal_tags, supercategory='animals', max_count=1000)
 cls.download_hashtag_posts(hashtags=object_tags2, supercategory='objects', max_count=1000)
 

@@ -1,2 +1,7 @@
 train01:
-062
+062 - stock
+064 - default equal dlr glr
+065, 066, 067 - decrease dlr, glr (-, 3260, 3261)
+068 - increase dlr, glr (3262)
+ - fast dec glr, slow dec dlr (3263)
+ 

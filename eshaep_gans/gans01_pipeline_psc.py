@@ -252,7 +252,7 @@ class Pipeline():
             self.blur_detection(input_path, output_path, v=v, thresh=self.blur_thresh, split=True)
 
         if criteria == '4': # Text ?
-            self.text_detection(input_path, output_path, v=v, confidence=0.99, allowed_area = 0.2)
+            self.text_detection(input_path, output_path, v=v, confidence=self.text_thresh, allowed_area = 0.15)
 
         if criteria == '5': #Faces?
             self.face_detection(input_path, output_path, v)
@@ -638,7 +638,7 @@ output_path = os.path.join(data_path, 'output')
 print("TIME OF EXECUTION", datetime.now())
 
 pipeline = Pipeline(proj_path=proj_path, input_folder=input_path, output_folder=output_path, \
-    size=512, blur_thresh=40, text_thresh=0.99)
+    size=512, blur_thresh=65, text_thresh=0.99)
 
 pipeline.filter(input_path = input_path, output_path = output_path, size=512)
 

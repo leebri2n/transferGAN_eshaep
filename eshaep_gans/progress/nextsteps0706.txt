@@ -1,4 +1,6 @@
 rsync ... --exclude="*.pkl"
+rsync -r leebri2n@cui1.arc.vt.edu:/groups/eshaep/training_runs/00068-stylegan3-r-train01-beach-512-gpus8-batch32-gamma10/ ./068 --exclude="*.pkl*"
+
 
 -decrease lr's -------------------
 -gamma

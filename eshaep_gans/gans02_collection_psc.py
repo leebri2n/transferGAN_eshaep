@@ -92,7 +92,7 @@ class InstagramScraper():
           pbar = tqdm(total=max_count)
           for post in instaloader.Hashtag.from_name(self.L.context, tag).get_posts_resumable():
               try:
-                  print("Saving image ", str(iter), " of ", str(limit))
+                  print("Saving post ", str(iter), " of ", str(limit))
 
                   file_exists = self.L.download_post(post, target='#'+tag)
                   if not file_exists:
@@ -130,18 +130,17 @@ class InstagramScraper():
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~ SCRAPING JOB ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-cls = InstagramScraper(login_user='gram.scrape', login_pass='insta$8scrape88', dest_path=destination)
+cls = InstagramScraper(login_user='gram.scrape2', login_pass='insta$8scrape88', dest_path=destination)
 print(cls.L.dirname_pattern)
 
 object_tags = ['fighterjet']
 object_tags2 = ['flowergarden', 'attackhelicopter']
 animal_tags = ['bettaphotography', 'mountainphotography']
-test_tag = ['https://www.instagram.com/explore/tags/google/']
 
 start = time.time()
 # ~~~~~~~~~~~~~~~~~~ ENTER SCRAPING SUBJECTS ~~~~~~~~~~~~~~~~~
-cls.download_hashtag_posts(hashtags=animal_tags, supercategory='animals', max_count=1000)
 cls.download_hashtag_posts(hashtags=object_tags2, supercategory='objects', max_count=1000)
+cls.download_hashtag_posts(hashtags=animal_tags, supercategory='animals', max_count=1000)
 
 # ~~~~~~~~~~~~~~~~ END SCRAPING ~~~~~~~~~~~~~~~~~~~~~~~~~
 end = time.time()

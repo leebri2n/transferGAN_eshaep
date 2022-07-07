@@ -47,7 +47,7 @@ print('Path to data files: {}'.format(data_path))
 # ~~~~~~~~~~~~~~~~~~~~ Class ~~~~~~~~~~~~~~~~~~~~
 class Pipeline():
     def __init__(self, proj_path='', data_path ='', input_folder='input', output_folder='output', \
-               size=300, blur_thresh=30, text_thresh=0.85, qual_thresh=70) -> None:
+               size=300, blur_thresh=30, text_thresh=0.999, text_area=0.1) -> None:
         #Simple paths
         self.proj_path = proj_path
         self.data_path = data_path
@@ -60,6 +60,7 @@ class Pipeline():
         self.size = size
         self.blur_thresh = blur_thresh
         self.text_thresh = text_thresh
+        self.text_area = text_area
         self.blurry_input = []
         self.text_input = []
 
@@ -640,9 +641,31 @@ print("TIME OF EXECUTION", datetime.now())
 pipeline = Pipeline(proj_path=proj_path, input_folder=input_path, output_folder=output_path, \
     size=512, blur_thresh=65, text_thresh=0.99)
 
-pipeline.filter(input_path = input_path, output_path = output_path, size=512)
+pipeline.filter(input_path = pipeline.input_path, output_path = pipeline.output_path, size=pipeline.size)
 
 end_t = time.time()#~~~~~~~~~~~~~~~~~~~~~~~
 
 #print("FILTERING EXECUTION TIME: ", str((end-start)/60), "MINUTES")
 print("TOTAL EXECUTION TIME: ", str((end_t-start_t)/60), "MINUTES")
+
+s = ''
+if s == "__main__":
+    parser = argparse.ArgumentParser(prog=sys.argv[0], description='')
+    parser.add_argument('-i', '--input', help='input folder', type=str, default=None)
+    parser.add_argument('-o', '--output', help='output folder', type=str, default=None)
+    parser.add_argument('-p', '--project', help='Project path', type=str, default=os.getcwd())
+    parser.add_argument('-s', '--size', help='Size of image to resize to', type=int, default=512)
+    parser.add_argument('-b', '--blur_thresh', help='Blur threshold', type=int, default=50)
+    parser.add_argument('-t', '--text_thresh', help='Allowable ratio of text area', type=float, default=0.1)
+
+    args = parser.parse_args()
+    args_di = vars(args)
+
+    pipeline = Pipeline(proj_path=args_di['project'],
+                        input_path=args_di['input'],
+                        output_path=args_di['output'],
+                        size=args_di['size'],
+                        blur_thresh=args_di['blur_thresh'],
+                        text_area=args_di['text_thresh'])
+
+    pipeline.filter(input_path = pipeline.input_path, output_path = pipeline.output_path, size=pipeline.size)

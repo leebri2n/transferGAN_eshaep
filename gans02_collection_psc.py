@@ -133,9 +133,8 @@ class InstagramScraper():
 cls = InstagramScraper(login_user='gram.scrape2', login_pass='insta$8scrape88', dest_path=destination)
 print(cls.L.dirname_pattern)
 
-object_tags = ['fighterjet']
-object_tags2 = ['flowergarden', 'attackhelicopter']
-animal_tags = ['bettaphotography', 'mountainphotography']
+object_tags2 = ['flowergarden', 'vase']
+animal_tags = ['mountainphotography']
 
 start = time.time()
 # ~~~~~~~~~~~~~~~~~~ ENTER SCRAPING SUBJECTS ~~~~~~~~~~~~~~~~~

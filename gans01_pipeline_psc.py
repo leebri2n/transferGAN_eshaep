@@ -495,7 +495,7 @@ class Pipeline():
             total_area = wid_orig * hei_orig
             #print("TEXT TO IMAGE RATIO:", text_area/total_area)
 
-            if text_area / total_area >= allowed_area or len(rects) > 10:
+            if text_area / total_area >= allowed_area:
                 if v: print(cur_name, " REJECTED.", " Warning: Significant text detected.")
                 shutil.move(cur_img, os.path.join(reject_path, 'rjtext_'+cur_name))
                 cv2.imwrite(os.path.join(os.path.join(text_path, 'rejectable'), \
@@ -639,7 +639,7 @@ output_path = os.path.join(data_path, 'output')
 print("TIME OF EXECUTION", datetime.now())
 
 pipeline = Pipeline(proj_path=proj_path, input_folder=input_path, output_folder=output_path, \
-    size=512, blur_thresh=65, text_thresh=0.99)
+    size=512, blur_thresh=65, text_thresh=0.99, text_area=0.005)
 
 pipeline.filter(input_path = pipeline.input_path, output_path = pipeline.output_path, size=pipeline.size)
 

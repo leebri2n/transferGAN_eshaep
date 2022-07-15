@@ -1,44 +1,37 @@
-# ~~~~~~~~~~~~~~~~~~~~ Packages ~~~~~~~~~~~~~~~~~~~~
-import cv2
 import os
-from os import listdir
 import sys
+from os import listdir
 import argparse
 from posixpath import join
 import shutil
 
-import json
+import PIL
+from PIL import Image, ImageStat
+import cv2
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import json
 
 import face_recognition as fr
 import imquality.brisque as brisque
-
 import imutils
-import time
 from imutils.object_detection import non_max_suppression
-#from google.colab.patches import cv2_imshow
-from tqdm import tqdm
 
+import time
+from tqdm import tqdm
 from datetime import datetime
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-import PIL
-from PIL import Image, ImageStat
-# ~~~~~~~~~~~~~~~~~~~~ Packages ~~~~~~~~~~~~~~~~~~~~
 
 # ~~~~~~~~~~~~~~~~~~~~ Pathing ~~~~~~~~~~~~~~~~~~~~
-prefix = 'C:/Users/leebr/Documents/GitHub'
+prefix = 'C:/Users/leebr/Documents/GitHub/'
 prefix = '/home/hume-users/leebri2n/Documents/'
 
 # modify customized_path
-#proj_path = os.path.join(os.path.join(prefix, 'hume-eshaep'), 'eshaep_gans')
-#data_path = os.path.join(prefix, 'data')
-proj_path = os.path.join(os.path.join(prefix, 'hume-eshaep'), 'eshaep_gans')
-data_path = os.path.join(prefix, 'testdata')
-data_path = os.path.join(prefix, 'data')
+proj_path = os.path.join(os.path.join(prefix, 'hume-rsc'), 'eshaep_gans') #Git
+data_path = os.path.join(os.path.join(prefix, 'hume-rsc'), 'data')
 
 print('Path to project files: {}'.format(proj_path))
 print('Path to data files: {}'.format(data_path))
@@ -80,15 +73,18 @@ class Pipeline():
         self.start = time.time()
         self.end = time.time()
 
+        self.verbose = v
+
     def filter(self, input_path, output_path, size, v=False):
         """
           Given input data files, processes and sorts them according to usability.
           Main data pipeline function.
 
-          Params:
-            input_path: Directory path to input images.
-            output_path: Directory path to output images.
-            size: Desired length of square output image's edge.
+          Parameters:
+            @input_path: Directory path to input images.
+            @output_path: Directory path to output images.
+            @size: Desired length of square output image's edge.
+            @v: Boolean for verbose output
         """
         self.start = time.time()
 
@@ -115,6 +111,7 @@ class Pipeline():
         self.reject_image('4', accept_path, output_path)
         self.reject_image('5', accept_path, output_path)
 
+        # ~~~~~~~~~~~ Standardize images ~~~~~~~~~~~
         self.walk(accept_path, self.acc_img)
         img_num = 0
         print("Standardizing images...")
@@ -155,14 +152,14 @@ class Pipeline():
         pbar.close()
         self.end = time.time()
 
-        #save to json to /output ~~~
+        #save to json to /output
         self.writejson(self.output_path)
 
         #save log file
         self.writelog(self.imgfiles_input, self.input_widths, self.input_heights,
                  self.input_formats, len(self.acc_img))
 
-        # Peek at cropped images
+        # Display cropped images
         self.display_accepted(self.display_img)
 
         # Returns dictionary
@@ -175,13 +172,11 @@ class Pipeline():
         various thresholds can be tweaked. See: valid extensions, dimension minima,
         and blur threshold.
 
-        Params:
-          cur_img: The image to be examined.
-          input_path: Directory path to input image folder.
-          output_path: Directory path to output image folder.
-          size: Desired size for which to qualify minimum size requirements.
-          img_blur_list: The list of image paths classified as blurry.
-          img_text_list: The list of image paths classified with detected text.
+        Arguments:
+          cur_img: The image to be examined
+          criteria: The specific filter criteria being employed
+          input_path: Directory path to input image folder
+          output_path: Directory path to output image folder
 
         Returns: Boolean
           True if the image should be rejected, and False if the image can be used.
@@ -266,9 +261,9 @@ class Pipeline():
         """
             Searches for and collects directory pathways to files.
 
-            Params:
-                input_path: Directory path to input images.
-                files: A list to store directory paths to valid files.
+            Arguments:
+                input_path: Directory path to input images
+                file_list: A list to store directory paths to valid files
 
             Returns:
                 file_list: A list of pathways to valid files.
@@ -290,7 +285,7 @@ class Pipeline():
         """
           Displays images that passed the acceptance criteria.
 
-          Params:
+          Arguments:
             displayimg: List of Image objects to plot.
         """
         plt.figure(figsize=(50,50))
@@ -305,9 +300,9 @@ class Pipeline():
         """
           A function that crops and resizes the image being examined.
 
-          Params:
-            cur_img: The image being standardized.
-            size: The desired size to which to resize the input image to.
+          Arguments:
+            cur_img: The image being standardized
+            size: The desired size to which to resize the input image
           Returns:
             img: PIL Image object of the standardized image.
         """
@@ -326,18 +321,17 @@ class Pipeline():
 
     def blur_detection(self, input_path, output_path, thresh=30, split=True, v=True):
         """
-          A function that detects and designates images as having an unacceptable
+          A helper function that detects and designates images as having an unacceptable
           amount of blurring.
 
-          Params:
+          Arguments:
             input_path: Directory path to input images.
-            thresh: Blurring threshold at which to classify as "blurry."
-            split: Boolean denoting whether or nto to copy blurry images into a
-              "blurry" subdirectory.
-            verbose: Track progress verbosely.
+            thresh: Blurring threshold at which to classify as "blurry"
+            split: Boolean denoting whether or nto to copy blurry images into a "blurry" subdirectory
+            v: Track progress verbosely
 
           Returns:
-            A list of image NAMES classified as blurry. MAKE PATHS?
+            A list of image filenames classified as blurry.
         """
         reject_path = os.path.join(output_path, "rejected")
         accept_path = os.path.join(output_path, "accepted")
@@ -382,13 +376,16 @@ class Pipeline():
         """
           Detects and recognizes allged text that appears in images.
 
-          Params:
-            cur_img: Directory path of the current image being assessed.
+          Arguments:
+            input_path: Directory pathway to input image files
+            output_path: Directory pathway to output iamge files
             confidence: Probability as a measure of sensitivity to which text
-            is detected in an image.
+                is detected in an image
+            allowed_area: Acceptable area of total pixel area that can be
+                occupied by detected text
 
           Returns:
-            The number of distinct text objects recognized.
+            A list of image filenames classified as containing text.
         """
         # Testing purposes
         class_path = os.path.join(self.input_path, 'classifications')
@@ -511,6 +508,17 @@ class Pipeline():
         return os.listdir(accept_path)
 
     def face_detection(self, input_path, output_path, v=False):
+        """
+            Detects the presence of human faces in images.
+
+            Arguments:
+                input_path: Directory pathway to input image files
+                output_path: Directory pathway to output iamge files
+                v: Boolean to print verbose output
+
+            Reutrns:
+                A list of image filenames that contain human faces.
+        """
         reject_path = os.path.join(output_path, "rejected")
         accept_path = os.path.join(output_path, "accepted") #temporary
 
@@ -537,6 +545,12 @@ class Pipeline():
         return os.listdir(accept_path)
 
     def writejson(self, output_path):
+        """
+            Writes metadata about input image files to json format.
+
+            Arguments:
+                output_path: Directory pathway to where image outputs are stored.
+        """
         try:
             metadata = open(os.path.join(output_path, 'input_metadata.json'), 'w')
             json.dump(self.img_dict, metadata, indent=1)
@@ -549,12 +563,12 @@ class Pipeline():
         """
           Writes a text file containing statistics about the input dataset.
 
-          Params:
-            imgfiles_inputlist: list of valid input image paths
-            widths: list of image widths
-            heights: list of image heights
-            formats: set of image formats that appear
-            acc: number of accepted images
+          Arguments:
+            imgfiles_inputlist: A list of valid input image paths
+            widths: A list of image widths
+            heights: A list of image heights
+            formats: A set of image formats that appear
+            acc: The number of accepted images
         """
         print(acc)
         datetime_exc = datetime.now() #Date and time of finished execution
@@ -617,7 +631,7 @@ class Pipeline():
         """
           Adds metadata entry to the metadictionary to be written.
 
-          Params:
+          Arguments:
             img_dict: The dictionary to which to store metadata in.
             img: The directory path to the image file.
             img_outname: The accepted image's output file name.
@@ -632,12 +646,13 @@ class Pipeline():
 
 
 #~~~~~~~~~~~~~~~~~~ Execution ~~~~~~~~~~~~~~~~~~~
-start_t = time.time()#~~~~~~~~~~~~~~~~
+start_t = time.time()
 
 input_path = os.path.join(data_path, 'input')
 output_path = os.path.join(data_path, 'output')
 print("TIME OF EXECUTION", datetime.now())
 
+#Currently best parameters to filter with
 pipeline = Pipeline(proj_path=proj_path, input_folder=input_path, output_folder=output_path, \
     size=512, blur_thresh=65, text_thresh=0.99, text_area=0.005)
 
@@ -645,9 +660,9 @@ pipeline.filter(input_path = pipeline.input_path, output_path = pipeline.output_
 
 end_t = time.time()#~~~~~~~~~~~~~~~~~~~~~~~
 
-#print("FILTERING EXECUTION TIME: ", str((end-start)/60), "MINUTES")
 print("TOTAL EXECUTION TIME: ", str((end_t-start_t)/60), "MINUTES")
 
+# ~~~~~~~~~~~~~~~~ Command line ~~~~~~~~~~~~~~~~
 s = ''
 if s == "__main__":
     parser = argparse.ArgumentParser(prog=sys.argv[0], description='')

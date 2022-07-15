@@ -68,16 +68,16 @@ class InstagramScraper():
             print("Login unsuccessful.")
 
     #HASHTAG
-    """
-        Downloads the media from Instagram posts posted to specified hashtags.
-        Each post is required to have at least one photo or video, but not both.
-
-        Parameters:
-            @hashtags: A list of hashtags from which to scrape
-            @supercategory: A string
-            @max_count: The desired number of posts to download media from.
-    """
     def download_hashtag_posts(self, hashtags=[], supercategory='misc', max_count=25):
+        """
+            Downloads the media from Instagram posts posted to specified hashtags.
+            Each post is required to have at least one photo or video, but not both.
+
+            Parameters:
+                @hashtags: A list of hashtags from which to scrape
+                @supercategory: A string
+                @max_count: The desired number of posts to download media from.
+        """
         if len(hashtags) == 0:
           print("Specify at least one hashtag into the hashtags list. Supercategory optional.")
           return

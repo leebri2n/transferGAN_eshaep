@@ -39,8 +39,28 @@ print('Path to data files: {}'.format(data_path))
 
 # ~~~~~~~~~~~~~~~~~~~~ Class ~~~~~~~~~~~~~~~~~~~~
 class Pipeline():
+    """
+        Class containing complete filtering capability. Requires a repository
+        of input images and another repository to output images to.
+    """
+
     def __init__(self, proj_path='', data_path ='', input_folder='input', output_folder='output', \
-               size=300, blur_thresh=30, text_thresh=0.999, text_area=0.1) -> None:
+               size=256, blur_thresh=45, text_thresh=0.999, text_area=0.1) -> None:
+        """
+            Initializes the class.
+
+            Arguments:
+                proj_path: Directory to this filtering script
+                data_path: Directory to data repository containing input and
+                    output subdirectories
+                input_folder: Directory to input images
+                output_folder: Directory to which to output standardized images
+                size: Size to which to crop accepted image to
+                blur_thresh: Threshold at which to classify an image as blurry
+                text_thresh: Confidence level required to classify text in image
+                text_area: Allowable area to be occupied by detected text
+        """
+
         #Simple paths
         self.proj_path = proj_path
         self.data_path = data_path

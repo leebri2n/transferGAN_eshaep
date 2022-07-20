@@ -47,7 +47,7 @@ print('Path to data files: {}'.format(data_path))
 # ~~~~~~~~~~~~~~~~~~~~ Class ~~~~~~~~~~~~~~~~~~~~
 class Pipeline():
     def __init__(self, proj_path='', data_path ='', input_folder='input', output_folder='output', \
-               size=300, blur_thresh=30, text_thresh=0.999, text_area=0.1) -> None:
+               size=300, blur_thresh=30, text_thresh=0.9999, text_area=0.1) -> None:
         #Simple paths
         self.proj_path = proj_path
         self.data_path = data_path
@@ -240,7 +240,7 @@ class Pipeline():
                 cur_name = os.path.basename(os.path.normpath(cur_img))
                 img = cv2.imread(cur_img)
 
-                if len(img.shape) < 2:
+                if len(img.shape) < 3:
                     if v: print(cur_name, "REJECTED.", "Warning: Grayscale image.")
                     shutil.move(cur_img, os.path.join(reject_path, 'rjgray_'+cur_name))
                 else:
@@ -250,10 +250,12 @@ class Pipeline():
             pbar.close()
 
         if criteria == '3': # Blurry?
+            print("Blur threshold", self.blur_thresh)
             self.blur_detection(input_path, output_path, v=v, thresh=self.blur_thresh, split=True)
 
         if criteria == '4': # Text ?
-            self.text_detection(input_path, output_path, v=v, confidence=self.text_thresh, allowed_area = 0.15)
+            print("Allowed text area", self.text_area)
+            self.text_detection(input_path, output_path, v=v, confidence=self.text_thresh, allowed_area = self.text_area)
 
         if criteria == '5': #Faces?
             self.face_detection(input_path, output_path, v)
@@ -378,7 +380,7 @@ class Pipeline():
 
         return os.listdir(accept_path)
 
-    def text_detection(self, input_path, output_path, confidence, allowed_area=0.1, resize=640, v=False):
+    def text_detection(self, input_path, output_path, confidence, allowed_area=0.25, resize=640, v=False):
         """
           Detects and recognizes allged text that appears in images.
 
@@ -490,24 +492,24 @@ class Pipeline():
                 cv2.rectangle(img_orig, (startX, startY), (endX, endY), (0, 255, 0), 2)
 
                 #area check?
-
             text_area = np.sum(rects_areas)
             total_area = wid_orig * hei_orig
             #print("TEXT TO IMAGE RATIO:", text_area/total_area)
 
-            if text_area / total_area >= allowed_area or len(rects) > 10:
+            tti_ratio = text_area / total_area
+            if tti_ratio >= allowed_area:
+                print("TEXT ENCOUNTERED")
                 if v: print(cur_name, " REJECTED.", " Warning: Significant text detected.")
                 shutil.move(cur_img, os.path.join(reject_path, 'rjtext_'+cur_name))
                 cv2.imwrite(os.path.join(os.path.join(text_path, 'rejectable'), \
-                    cur_name), img_orig)
+                    str(tti_ratio)[2:]+'-'+cur_name), img_orig)
             else:
                 shutil.move(cur_img, os.path.join(accept_path, cur_name))
                 cv2.imwrite(os.path.join(os.path.join(text_path, 'acceptable'), \
-                    cur_name), img_orig)
+                    str(tti_ratio)[2:]+'-'+cur_name), img_orig)
 
             pbar.update()
         pbar.close()
-
         return os.listdir(accept_path)
 
     def face_detection(self, input_path, output_path, v=False):
@@ -635,11 +637,15 @@ class Pipeline():
 start_t = time.time()#~~~~~~~~~~~~~~~~
 
 input_path = os.path.join(data_path, 'input')
+input_path = os.path.join(data_path, os.path.join('input', 'objects', 'fighterjet'))
+
 output_path = os.path.join(data_path, 'output')
 print("TIME OF EXECUTION", datetime.now())
 
 pipeline = Pipeline(proj_path=proj_path, input_folder=input_path, output_folder=output_path, \
-    size=512, blur_thresh=65, text_thresh=0.99)
+    size=1024, blur_thresh=45, text_thresh=0.99, text_area=0.005)
+    #0.005???
+    #0.004??
 
 pipeline.filter(input_path = pipeline.input_path, output_path = pipeline.output_path, size=pipeline.size)
 

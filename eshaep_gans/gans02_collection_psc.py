@@ -117,25 +117,13 @@ class InstagramScraper():
         self.L.dirname_pattern = os.path.join(destination, '')
         print("Scraping job completed. Resetting directory...")
 
-    def download_hashtag_posts_alt(self, hashtags_url=[], supercategory='misc', max_count=25):
-        for tag in hashtags_url:
-            iter = 0
-            limit = max_count
-
-            test_tag = Hashtag(tag)
-            test_tag.scrape()
-            print(test_tag.amount_of_posts)
-
-        print("Scraping job completed.")
-
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~ SCRAPING JOB ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 cls = InstagramScraper(login_user='gram.scrape2', login_pass='insta$8scrape88', dest_path=destination)
 print(cls.L.dirname_pattern)
 
-object_tags = ['fighterjet']
-object_tags2 = ['flowergarden', 'attackhelicopter']
-animal_tags = ['bettaphotography', 'mountainphotography']
+object_tags2 = ['flowergarden']
+animal_tags = ['mountainphotography']
 
 start = time.time()
 # ~~~~~~~~~~~~~~~~~~ ENTER SCRAPING SUBJECTS ~~~~~~~~~~~~~~~~~

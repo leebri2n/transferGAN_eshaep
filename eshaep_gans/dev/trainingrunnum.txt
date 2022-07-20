@@ -1,7 +1,60 @@
+rsync -r leebri2n@cui1.arc.vt.edu:/groups/eshaep/training_runs/00068-stylegan3-r-train01-beach-512-gpus8-batch32-gamma10/ ./068 --exclude="*.pkl*"
+
+
 train01:
 062 - stock
 064 - default equal dlr glr
 065, 066, 067 - decrease dlr, glr (3259, 3260, 3261)
 068 - increase dlr, glr (3262)
- - fast dec glr, slow dec dlr (3272)
- - gamma 5, 15, 20 (3269,3270,3271)
+069,070,071 - gamma 5, 15, 20 (3269,3270,3271)
+072 - fast dec glr, slow dec dlr (3272)
+
+##################################
+Possible successes:
+067, prob Not - lower dlr+glr -> trend downwards?
+15 gamma best so far
+
+https://tensorboard.dev/experiment/TxrB16M8SQudQJt2bAN2uQ/
+###################################
+
+train02:
+  - LR 0.0005
+073 - gamma 30 (3273) large step
+074 - gamma 18 (3274) small step
+075 - gamma 75  (3275) even larger step
+076 - gamma 50 (3278) large step 2
+#CONSIDER RESUMING
+
+  - LR 0.0016, previous LR too low
+077 - no aug (3279), (gamm 16)
+078 - fix aug (3280), (gamm 16)
+079 - disregard
+
+080 - gamma 18 (3282) small step, 3
+081 - gamma 30 (3283) reg step, 15
+082 - gamma 45 (3284) medium step, 30
+083 - gamma 75 (3285) large step, 60
+
+######################################
+
+train03:
+  no aug:
+  - new dataset: latteart, fighterjet, corgi?
+ 84 >> fighterjet (3287)
+ 85 >> latteart (3288)
+ 86 >> betta (3289)
+
+  ada:
+ 87 >> fighterjet (3293)
+ 88 >> latteart (3294)
+ 89 >> betta (3295)
+
+  gamma 24, 240!:
+ 90 - fighterjet (3296)
+ 91 - fighterjet (3297)
+
+
+
+train04:
+  new model: ffqh model, gamma 15:
+  92 - fighterjet (3298)

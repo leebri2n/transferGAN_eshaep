@@ -53,8 +53,19 @@ train03:
  90 - fighterjet (3296)
  91 - fighterjet (3297)
 
+ x - bettaphotography ()
+ x - bettaphotography ()
 
+  continue:
+ 3309 - fighterjet (3309)
+ 3311 - betta - penalize hi gamma ()
+ 3312 - betta - penalize lo gamma ()
+
+############################################
 
 train04:
   new model: ffqh model, gamma 15:
-  92 - fighterjet (3298)
+ 3298 - fighterjet, ffhq (92)
+ 3306 - latteart, ffhq ()
+ 3307 - fighterjet, metfaces ()
+ 3308 - latteart, metfaces ()

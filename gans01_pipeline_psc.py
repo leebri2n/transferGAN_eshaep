@@ -36,7 +36,7 @@ prefix = '/home/hume-users/leebri2n/Documents/'
 # modify customized_path
 #proj_path = os.path.join(os.path.join(prefix, 'hume-eshaep'), 'eshaep_gans')
 #data_path = os.path.join(prefix, 'data')
-proj_path = os.path.join(os.path.join(prefix, 'hume-eshaep'), 'eshaep_gans')
+proj_path = os.path.join(os.path.join(prefix, 'eshaep_gans'))
 data_path = os.path.join(prefix, 'testdata')
 data_path = os.path.join(prefix, 'data')
 
@@ -636,14 +636,14 @@ class Pipeline():
 #~~~~~~~~~~~~~~~~~~ Execution ~~~~~~~~~~~~~~~~~~~
 start_t = time.time()#~~~~~~~~~~~~~~~~
 
-input_path = os.path.join(data_path, 'input')
-input_path = os.path.join(data_path, os.path.join('input', 'objects', 'fighterjet'))
+input_path = os.path.join(data_path, 'input') #entire input
+input_path = os.path.join(data_path, os.path.join('input', 'animals', 'baldeagle')) #specific subject
 
 output_path = os.path.join(data_path, 'output')
 print("TIME OF EXECUTION", datetime.now())
 
 pipeline = Pipeline(proj_path=proj_path, input_folder=input_path, output_folder=output_path, \
-    size=1024, blur_thresh=45, text_thresh=0.99, text_area=0.005)
+    size=512, blur_thresh=45, text_thresh=0.99, text_area=0.005)
     #0.005???
     #0.004??
 

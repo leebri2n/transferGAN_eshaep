@@ -637,7 +637,7 @@ class Pipeline():
 start_t = time.time()#~~~~~~~~~~~~~~~~
 
 input_path = os.path.join(data_path, 'input') #entire input
-input_path = os.path.join(data_path, os.path.join('input', 'animals', 'baldeagle')) #specific subject
+input_path = os.path.join(data_path, os.path.join('input', 'objects', 'trainphotography')) #specific subject
 
 output_path = os.path.join(data_path, 'output')
 print("TIME OF EXECUTION", datetime.now())

@@ -38,8 +38,9 @@ train02:
 ######################################
 
 train03:
+- new dataset: latteart, fighterjet
+
   no aug:
-  - new dataset: latteart, fighterjet, corgi?
  84 >> fighterjet (3287)
  85 >> latteart (3288)
  86 >> betta (3289)
@@ -61,11 +62,22 @@ train03:
  3311 - betta - penalize hi gamma ()
  3312 - betta - penalize lo gamma ()
 
+   redo betta w default dlr
+ 3313 - betta - og dlr glr setting ()
+
 ############################################
 
 train04:
   new model: ffqh model, gamma 15:
  3298 - fighterjet, ffhq (92)
- 3306 - latteart, ffhq ()
- 3307 - fighterjet, metfaces ()
- 3308 - latteart, metfaces ()
+ 3306 - latteart, ffhq (93)
+ 3307 - fighterjet, metfaces (94)
+ 3308 - latteart, metfaces (95?)
+
+ train05:
+  new datasets: baldeagle, corgi, mountains
+
+ 3314 - baldeagle ()
+ 3315 - trains ()
+ 3316 - corgi ()
+ 3317 - mountains ()

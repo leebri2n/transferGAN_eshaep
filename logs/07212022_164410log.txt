@@ -1,0 +1,17 @@
+Latest successful execution finished at:/07/21/2022, 16:44:10
+
+Number of valid images: 1794
+
+Minimum input width: 368
+Maximum input width: 1440
+
+Minimum input height: 344
+Maximum input height: 1818
+
+Average input width: 1283.3110367892978
+Average input height: 1127.3846153846155
+
+Percentage of accepted images:/76.9788182831661/%
+
+Total execution time: 38.64303313891093 minutes
+

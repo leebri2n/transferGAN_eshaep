@@ -58,12 +58,12 @@ train03:
  x - bettaphotography ()
 
   continue:
- 3309 - fighterjet (3309)
- 3311 - betta - penalize hi gamma ()
- 3312 - betta - penalize lo gamma ()
+ 3309 - fighterjet (96)
+ 3311 - betta - penalize hi gamma (97)
+ 3312 - betta - penalize lo gamma (98)
 
    redo betta w default dlr
- 3313 - betta - og dlr glr setting ()
+ 3313 - betta - og dlr variable glr setting ()
 
 ############################################
 
@@ -77,7 +77,22 @@ train04:
  train05:
   new datasets: baldeagle, corgi, mountains
 
- 3314 - baldeagle ()
- 3315 - trains ()
- 3316 - corgi ()
- 3317 - mountains ()
+ 3314 - baldeagle (99)
+ 3315 - trains (100)
+ 3316 - corgi (101)
+ 3317 - mountains (102)
+
+ ############################################
+Folders for report: 7 runs max
+  Initial runs:
+    LRs: 063, 064, 065, 066, 068
+    Gamma: 069, 070, 071, , 081, 072, 073
+    Aug: 077, 078,079
+
+  Different datasets:
+    064, 87, 88, 89
+
+  Different networks:
+    92, 93, 94, 95
+
+ ###############################################

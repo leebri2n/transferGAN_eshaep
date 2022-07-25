@@ -46,6 +46,8 @@ print('Path to data files: {}'.format(data_path))
 
 # ~~~~~~~~~~~~~~~~~~~~ Class ~~~~~~~~~~~~~~~~~~~~
 class Pipeline():
+    """A class containing all necessary functions used for data filtration"""
+
     def __init__(self, proj_path='', data_path ='', input_folder='input', output_folder='output', \
                size=300, blur_thresh=30, text_thresh=0.9999, text_area=0.1) -> None:
         #Simple paths
@@ -82,13 +84,16 @@ class Pipeline():
 
     def filter(self, input_path, output_path, size, v=False):
         """
-          Given input data files, processes and sorts them according to usability.
-          Main data pipeline function.
+          The main filtering function including a filter walk and standardization
+          of accepted image data.
 
-          Params:
+          Parameters:
             input_path: Directory path to input images.
             output_path: Directory path to output images.
-            size: Desired length of square output image's edge.
+            size: Desired pixel size of (square) output images.
+
+          Return:
+            The dictionary of input data metadata.
         """
         self.start = time.time()
 
@@ -171,20 +176,18 @@ class Pipeline():
     #~~~~~~~~~~~~ Helper functions ~~~~~~~~~~~~~~~~~
     def reject_image(self, criteria, input_path, output_path, v=False):
         """
-        All-encompassing function handling unusable images. Desired values for
-        various thresholds can be tweaked. See: valid extensions, dimension minima,
-        and blur threshold.
+          Function that handles rejection of images for a single filter.
+          Specified criterion engages the associated specific filter.
 
-        Params:
-          cur_img: The image to be examined.
-          input_path: Directory path to input image folder.
-          output_path: Directory path to output image folder.
-          size: Desired size for which to qualify minimum size requirements.
-          img_blur_list: The list of image paths classified as blurry.
-          img_text_list: The list of image paths classified with detected text.
+        Parameters:
+          criteria: A string of the filter number being requested.
+          input_path: Directory path to input images.
+          output_path: Directory path to output images.
+          v: Verbose print execution.
 
-        Returns: Boolean
-          True if the image should be rejected, and False if the image can be used.
+        Returns:
+          Boolean of whether or not an image passes a filter. True if it
+          passes, false, if it does not.
         """
 
         reject_path = os.path.join(output_path, "rejected")
@@ -268,12 +271,13 @@ class Pipeline():
         """
             Searches for and collects directory pathways to files.
 
-            Params:
+            Parameters:
                 input_path: Directory path to input images.
-                files: A list to store directory paths to valid files.
+                file_list: A list to store full-length directory pathways
+                to files.
 
             Returns:
-                file_list: A list of pathways to valid files.
+                file_list: A list of full-length pathways to searched files.
         """
         input_list = os.listdir(input_path)
         skip_list = ['classifications', 'displayfolder', 'zipdatasets']
@@ -290,13 +294,14 @@ class Pipeline():
 
     def display_accepted(self, display_img):
         """
-          Displays images that passed the acceptance criteria.
+          Displays images that passed all filter criteria.
 
-          Params:
-            displayimg: List of Image objects to plot.
+          Parameters:
+            displayimg: List of Pillow Image objects to plot.
         """
         plt.figure(figsize=(50,50))
         assert(len(display_img) == len(self.acc_img))
+
         for i in range(len(display_img)):
           plt.subplot(len(display_img), len(display_img), i+1)
           plt.axis('off')
@@ -305,13 +310,14 @@ class Pipeline():
 
     def img_standardize(self, cur_img, size):
         """
-          A function that crops and resizes the image being examined.
+          Crops and resizes an image to the desired size.
 
-          Params:
-            cur_img: The image being standardized.
-            size: The desired size to which to resize the input image to.
+          Parameters:
+            cur_img: The directory path to the image being standardized.
+            size: The desired size to which to resize the input image.
+
           Returns:
-            img: PIL Image object of the standardized image.
+            img: Pillow Image object of the standardized image.
         """
         img = Image.open(cur_img)
         width, height = img.size
@@ -328,18 +334,20 @@ class Pipeline():
 
     def blur_detection(self, input_path, output_path, thresh=30, split=True, v=True):
         """
-          A function that detects and designates images as having an unacceptable
-          amount of blurring.
+          Helper function that classifies images in an input pathway as blurry
+          or sharp and relocates them accordingly.
 
-          Params:
+          Parameters:
             input_path: Directory path to input images.
-            thresh: Blurring threshold at which to classify as "blurry."
-            split: Boolean denoting whether or nto to copy blurry images into a
-              "blurry" subdirectory.
-            verbose: Track progress verbosely.
+            output_path: Directory path to output images.
+            thresh: Threshold at which to classify as "blurry." See "LPC scores."
+            split: Boolean for whether or not to copy blurry images into a
+              "blurry" subdirectory. True for subdirectory split, false, for
+              no changes.
+            verbose: Verbose execution.
 
           Returns:
-            A list of image NAMES classified as blurry. MAKE PATHS?
+            A list of the blurry image filenames.
         """
         reject_path = os.path.join(output_path, "rejected")
         accept_path = os.path.join(output_path, "accepted")
@@ -382,12 +390,17 @@ class Pipeline():
 
     def text_detection(self, input_path, output_path, confidence, allowed_area=0.25, resize=640, v=False):
         """
-          Detects and recognizes allged text that appears in images.
+          Helper function that detects supposed text that appears in images from
+          an input pathway and relocates them accordingly.
 
-          Params:
-            cur_img: Directory path of the current image being assessed.
-            confidence: Probability as a measure of sensitivity to which text
-            is detected in an image.
+          Parameters:
+            input_path: Directory path to input images.
+            output_path: Directory path to output images.
+            confidence: Confidence level required to deem a region as a
+                text classification.
+            allowed_area: The pixel area ratio of text regions to the full image.
+            resize: Specific pixel size to which to resize in the text
+                classificiation operation.
 
           Returns:
             The number of distinct text objects recognized.
@@ -513,6 +526,17 @@ class Pipeline():
         return os.listdir(accept_path)
 
     def face_detection(self, input_path, output_path, v=False):
+        """
+          Helper function that detects human faces in images from an input
+          pathway and relocates them accordingly.
+
+          Parameters:
+            input_path: Directory path to input images.
+            output_path: Directory path to output images.
+
+          Returns:
+            The directory path of accepted images.
+        """
         reject_path = os.path.join(output_path, "rejected")
         accept_path = os.path.join(output_path, "accepted") #temporary
 

@@ -63,24 +63,24 @@ train03:
  3312 - betta - penalize lo gamma (98)
 
    redo betta w default dlr
- 3313 - betta - og dlr variable glr setting ()
+ 3313 - betta - dlr variable glr setting ()
 
 ############################################
 
 train04:
   new model: ffqh model, gamma 15:
- 3298 - fighterjet, ffhq (92)
- 3306 - latteart, ffhq (93)
- 3307 - fighterjet, metfaces (94)
- 3308 - latteart, metfaces (95?)
+ 3298 - fighterjet, ffhq (92) X
+ 3306 - latteart, ffhq (93) X
+ 3307 - fighterjet, metfaces (94) X
+ 3308 - latteart, metfaces (95) X
 
  train05:
   new datasets: baldeagle, corgi, mountains
 
- 3314 - baldeagle (99)
- 3315 - trains (100)
- 3316 - corgi (101)
- 3317 - mountains (102)
+ 3314 - baldeagle (98) X
+ 3315 - trains (99) X
+ 3316 - corgi (100) X
+ 3317 - mountains (101) X
 
  ############################################
 Folders for report: 7 runs max

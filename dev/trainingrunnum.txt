@@ -58,12 +58,12 @@ train03:
  x - bettaphotography ()
 
   continue:
- 3309 - fighterjet (96)
- 3311 - betta - penalize hi gamma (97)
- 3312 - betta - penalize lo gamma (98)
+  - fighterjet (96)
+  - betta - penalize hi gamma ()
+  - betta - penalize lo gamma ()
 
    redo betta w default dlr
- 3313 - betta - dlr variable glr setting ()
+  - betta - dlr variable glr setting ()
 
 ############################################
 

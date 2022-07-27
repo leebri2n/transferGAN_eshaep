@@ -1,9 +1,0 @@
-DATSETS: https://tensorboard.dev/experiment/BZ5eWEVfRrmHdukmwqombA/#scalars&runSelectionState=eyIwODgtbGF0dGUiOnRydWUsIjA5OS10cmFpbnMiOnRydWUsIjEwMS1tb3VudGFpbnBob3RvZ3JhcGh5Ijp0cnVlLCIxMDAtY29yZ2kiOmZhbHNlLCIwODktYmV0dGEiOmZhbHNlLCIwODctamV0IjpmYWxzZX0%3D
-
-NETWORKS: https://tensorboard.dev/experiment/VjaZB7bJSbOBWpoVc1szUQ/#scalars&_smoothingWeight=0.5
-
-AUG: https://tensorboard.dev/experiment/MhN1EDwyROWUvcy4rZ47Xg/#scalars
-
-GAMMA: https://tensorboard.dev/experiment/Y8GdiAK2RB2DxtvMv7UYEA/#scalars&runSelectionState=eyIwOTEtamV0LWdhbW1hMjQwIjp0cnVlLCIwNzAtZ2FtbWExNSI6ZmFsc2UsIjA3MS1nYW1tYTIwIjp0cnVlLCIwODItZ2FtbWE0NSI6dHJ1ZSwiMDgzLWdhbW1hNzUiOmZhbHNlLCIwNjktZ2FtbWE1Ijp0cnVlfQ%3D%3D
-
-LR:

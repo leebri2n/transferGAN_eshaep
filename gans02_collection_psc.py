@@ -35,16 +35,8 @@ class InstagramScraper():
     """
         A class containing custom functions that use Instaloader's functions
         to scrape photo and image data from Instagram.
-
-        Help recieved from: @HKN MZ on medium.com
-
-        Parameters:
-            @login_user: Instagram account username
-            @login_pass: Instagram account password
-            @dest_path: Destination path to which to save data to
-            @date_start: Start date of post search
-            @date_end: End date of post search
     """
+    
     def __init__(self, login_user='', login_pass='', dest_path='', \
         date_start=(2022, 5, 1), date_end=(2022, 6, 1)):
 
@@ -70,13 +62,15 @@ class InstagramScraper():
     #HASHTAG
     def download_hashtag_posts(self, hashtags=[], supercategory='misc', max_count=25):
         """
-            Downloads the media from Instagram posts posted to specified hashtags.
-            Each post is required to have at least one photo or video, but not both.
+          Scrapes post media from public posts that appear under a search
+          of the given hashtag, ordered by recency.
 
-            Parameters:
-                @hashtags: A list of hashtags from which to scrape
-                @supercategory: A string
-                @max_count: The desired number of posts to download media from.
+          Parameters:
+            hashtags: A list of hashtags from which to scrape posts from.
+            supercategory: A string to make the superfolder under which a
+                hashtag's posts will be downloaded to.
+            max_count: The number of posts to scrape.
+
         """
         if len(hashtags) == 0:
           print("Specify at least one hashtag into the hashtags list. Supercategory optional.")
@@ -127,12 +121,6 @@ class InstagramScraper():
 scraper = InstagramScraper(login_user='gram.scrape2', login_pass='insta$8scrape88', dest_path=destination)
 print("Saving media to: ", scraper.L.dirname_pattern)
 
-<<<<<<< HEAD:eshaep_gans/gans02_collection_psc.py
-object_tags2 = ['flowergarden']
-animal_tags = ['mountainphotography']
-=======
-animal_tags = ['hiking', 'fishing']
->>>>>>> fef65c8f01085b9332177d746822510a1e37660c:gans02_collection_psc.py
 
 start = time.time()
 # ~~~~~~~~~~~~~~~~~~ ENTER SCRAPING SUBJECTS ~~~~~~~~~~~~~~~~~

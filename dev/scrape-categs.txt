@@ -1,4 +1,0 @@
--Dog breed, animal type
--Landscape ,no close image
--Food
-~5000 per category

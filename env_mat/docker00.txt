@@ -1,0 +1,682 @@
+docker exec -it sgan2_eshaep /bin/bash
+
+docker run -itd --name sg2ada_eshaep -v /home/hume-users/leebri2n:/home/hume-users/leebri2n/ -w /home/hume-users/leebri2n sg2ada:latest /bin/bash
+docker exec -it sg2ada_eshaep /bin/bash
+
+python generate.py --outdir=out --trunc=1 --seeds=85,265,297,849 \
+    --network=https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/metfaces.pkl
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker build --tag sg2ada_4eshaep:latest
+"docker build" requires exactly 1 argument.
+See 'docker build --help'.
+
+Usage:  docker build [OPTIONS] PATH | URL | -
+
+Build an image from a Dockerfile
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker build --tag sg2ada_4eshaep:latest ./docker_run.sh
+unable to prepare context: context must be a directory: /home/hume-users/leebri2n/Documents/stylegan2-ada-pytorch/docker_run.sh
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker build --tag sg2ada_4eshaep:latest docker_run.sh
+unable to prepare context: context must be a directory: /home/hume-users/leebri2n/Documents/stylegan2-ada-pytorch/docker_run.sh
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker build --tag sg2ada_4eshaep docker_run.sh
+unable to prepare context: context must be a directory: /home/hume-users/leebri2n/Documents/stylegan2-ada-pytorch/docker_run.sh
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker build --tag sg2ada_eshaep docker_run.sh python3 generate.py --outdir=out --trunc=1 --seeds=85,265,297,849 \
+>     --network=https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/metfaces.pkl
+unknown flag: --outdir
+See 'docker build --help'.
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker build --tag sg2ada_eshaep docker_run.sh python3 generate.py --outdir=out --trunc=1 --seeds=85,265,297,849     --network=https://nvlabs-fi-cdn.nvidia.com/stylegan2-^C
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker build --tag sgan2_eshaep:latest .
+Sending build context to Docker daemon  2.736MB
+Step 1/7 : FROM nvcr.io/nvidia/pytorch:20.12-py3
+20.12-py3: Pulling from nvidia/pytorch
+6a5697faee43: Pull complete 
+ba13d3bc422b: Pull complete 
+a254829d9e55: Pull complete 
+ff2daf3cdab6: Pull complete 
+9867a212b99b: Pull complete 
+da2dc255298e: Pull complete 
+45c66138abc4: Pull complete 
+69f8f14337fe: Pull complete 
+ca6a80844c87: Pull complete 
+f1cef55f2f91: Pull complete 
+7da10256993e: Pull complete 
+6b2e44626eea: Pull complete 
+6e6939188865: Pull complete 
+e935c7b1a998: Pull complete 
+6ff8cf358a74: Pull complete 
+590ea530411f: Pull complete 
+e5e48f41197f: Pull complete 
+125a5da70c41: Pull complete 
+9279dc6b257d: Pull complete 
+f594d963eb87: Pull complete 
+1b18685e6f7a: Pull complete 
+9591a6fe4536: Pull complete 
+27faf16bb331: Pull complete 
+bdb38838130b: Pull complete 
+f9b433e418df: Pull complete 
+1115e15a521a: Pull complete 
+10b0575de683: Pull complete 
+ff59890af5bf: Pull complete 
+40ad6f0e66a8: Pull complete 
+922bdc233ecf: Pull complete 
+82ac6db02f76: Pull complete 
+2fed69baa886: Pull complete 
+40631532f188: Pull complete 
+6b0a02f79eec: Pull complete 
+5cb706462fd3: Pull complete 
+8e8093160e2e: Pull complete 
+76c8b9773616: Pull complete 
+8043f5b130ac: Pull complete 
+24d6f5e10b64: Pull complete 
+28cb839879c0: Pull complete 
+4adcf582e5d5: Pull complete 
+a50745737374: Pull complete 
+131a8bada9b8: Pull complete 
+1a297942cbed: Pull complete 
+7088b2887299: Pull complete 
+0cd61a107eb7: Pull complete 
+f4abf5809bbd: Pull complete 
+5ce8cc51c2d6: Pull complete 
+c19296d8b165: Pull complete 
+65b415727830: Pull complete 
+92ef4ed872d5: Pull complete 
+8a6a6385784d: Pull complete 
+7159e82f10c2: Pull complete 
+8903926b1920: Pull complete 
+b497b1efac36: Pull complete 
+e0466816640f: Pull complete 
+2992460da256: Pull complete 
+a5ff18c9283b: Pull complete 
+Digest: sha256:cc14c0cf580989bb1ff39fa78ca697b77a8860b17acead4a60b853bb45499f8d
+Status: Downloaded newer image for nvcr.io/nvidia/pytorch:20.12-py3
+ ---> ad0f29ddeb63
+Step 2/7 : ENV PYTHONDONTWRITEBYTECODE 1
+ ---> Running in 4c0c118e30ba
+Removing intermediate container 4c0c118e30ba
+ ---> 268424f80640
+Step 3/7 : ENV PYTHONUNBUFFERED 1
+ ---> Running in a9e64501d324
+Removing intermediate container a9e64501d324
+ ---> db605a25371e
+Step 4/7 : RUN pip install imageio-ffmpeg==0.4.3 pyspng==0.1.0
+ ---> Running in 4da2f9be9091
+Collecting imageio-ffmpeg==0.4.3
+  Downloading imageio_ffmpeg-0.4.3-py3-none-manylinux2010_x86_64.whl (26.9 MB)
+Collecting pyspng==0.1.0
+  Downloading pyspng-0.1.0-cp38-cp38-manylinux2010_x86_64.whl (194 kB)
+Requirement already satisfied: numpy in /opt/conda/lib/python3.8/site-packages (from pyspng==0.1.0) (1.19.2)
+Installing collected packages: imageio-ffmpeg, pyspng
+Successfully installed imageio-ffmpeg-0.4.3 pyspng-0.1.0
+Removing intermediate container 4da2f9be9091
+ ---> 6acb072f2ccb
+Step 5/7 : WORKDIR /workspace
+ ---> Running in a2b3d74f9fd4
+Removing intermediate container a2b3d74f9fd4
+ ---> b14b476743ba
+Step 6/7 : RUN (printf '#!/bin/bash\nunset TORCH_CUDA_ARCH_LIST\nexec \"$@\"\n' >> /entry.sh) && chmod a+x /entry.sh
+ ---> Running in 59140b6d436a
+Removing intermediate container 59140b6d436a
+ ---> c45bda7277ff
+Step 7/7 : ENTRYPOINT ["/entry.sh"]
+ ---> Running in c110fcedb9c6
+Removing intermediate container c110fcedb9c6
+ ---> db06057f8aae
+Successfully built db06057f8aae
+Successfully tagged sgan2_eshaep:latest
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE                                                  COMMAND                  CREATED             STATUS                      PORTS                                               NAMES
+1f410c74e923        api_v4_export                                          "bash"                   14 months ago       Exited (255) 7 months ago   0.0.0.0:5000->5000/tcp, 5002/tcp                    live_api_v4
+d0ee2f288259        172.16.4.75:5000/feature_extractor:latest-loganryn     "bash"                   18 months ago       Created                                                                         brave_kapitsa
+802419da6f65        rapidsai/rapidsai:cuda10.1-runtime-ubuntu18.04-py3.7   "/usr/bin/tini -- /o…"   19 months ago       Created                     8786-8787/tcp, 127.0.0.1:5002->5002/tcp, 8888/tcp   justus_rapids
+754e94325cdb        172.16.4.75:5000/feature_extractor:latest-loganryn     "bash"                   22 months ago       Created                                                                         zealous_wilson
+71499202970f        172.16.4.75:5000/sg2_img:latest-loganryn               "bash"                   22 months ago       Created                                                                         festive_burnell
+3df805b4088e        172.16.4.75:5000/sg2_img:latest-loganryn               "bash"                   22 months ago       Created                                                                         relaxed_poincare
+3112bd34b160        4c16e3f04806                                           "bash"                   22 months ago       Created                                                                         amazing_austin
+02c029fe1b8e        172.16.4.75:5000/feature_extractor:latest-justus       "bash"                   2 years ago         Exited (0) 14 months ago                                                        emerging_tech
+d1af9618af31        172.16.4.75:5000/feature_extractor:latest-justus       "bash"                   2 years ago         Exited (0) 14 months ago                                                        live_image_service
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker run sgan2_eshaep:latest 
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE                                                  COMMAND                  CREATED             STATUS                      PORTS                                               NAMES
+428693a7db94        sgan2_eshaep:latest                                    "/entry.sh"              5 seconds ago       Exited (0) 3 seconds ago                                                        gracious_wright
+1f410c74e923        api_v4_export                                          "bash"                   14 months ago       Exited (255) 7 months ago   0.0.0.0:5000->5000/tcp, 5002/tcp                    live_api_v4
+d0ee2f288259        172.16.4.75:5000/feature_extractor:latest-loganryn     "bash"                   18 months ago       Created                                                                         brave_kapitsa
+802419da6f65        rapidsai/rapidsai:cuda10.1-runtime-ubuntu18.04-py3.7   "/usr/bin/tini -- /o…"   19 months ago       Created                     8786-8787/tcp, 127.0.0.1:5002->5002/tcp, 8888/tcp   justus_rapids
+754e94325cdb        172.16.4.75:5000/feature_extractor:latest-loganryn     "bash"                   22 months ago       Created                                                                         zealous_wilson
+71499202970f        172.16.4.75:5000/sg2_img:latest-loganryn               "bash"                   22 months ago       Created                                                                         festive_burnell
+3df805b4088e        172.16.4.75:5000/sg2_img:latest-loganryn               "bash"                   22 months ago       Created                                                                         relaxed_poincare
+3112bd34b160        4c16e3f04806                                           "bash"                   22 months ago       Created                                                                         amazing_austin
+02c029fe1b8e        172.16.4.75:5000/feature_extractor:latest-justus       "bash"                   2 years ago         Exited (0) 14 months ago                                                        emerging_tech
+d1af9618af31        172.16.4.75:5000/feature_extractor:latest-justus       "bash"                   2 years ago         Exited (0) 14 months ago                                                        live_image_service
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker stop gracious_wright
+gracious_wright
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker rm gracious_wright
+gracious_wright
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker run -it --name sgan2_eshaep --runtime=nvidia -v /home/hume-users/leebri2n/:/home/hume-users/leebri2n/ -w /home/hume-users/leebri2n/ sgan2_eshaep:latest 
+docker: Error response from daemon: Unknown runtime specified nvidia.
+See 'docker run --help'.
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker run -it --name sgan2_eshaep -v /home/hume-users/leebri2n/:/home/hume-users/leebri2n/ -w /home/hume-users/leebri2n/ sgan2_eshaep:latest 
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE                                                  COMMAND                  CREATED             STATUS                      PORTS                                               NAMES
+cdad74661943        sgan2_eshaep:latest                                    "/entry.sh"              5 seconds ago       Exited (0) 4 seconds ago                                                        sgan2_eshaep
+1f410c74e923        api_v4_export                                          "bash"                   14 months ago       Exited (255) 7 months ago   0.0.0.0:5000->5000/tcp, 5002/tcp                    live_api_v4
+d0ee2f288259        172.16.4.75:5000/feature_extractor:latest-loganryn     "bash"                   18 months ago       Created                                                                         brave_kapitsa
+802419da6f65        rapidsai/rapidsai:cuda10.1-runtime-ubuntu18.04-py3.7   "/usr/bin/tini -- /o…"   19 months ago       Created                     8786-8787/tcp, 127.0.0.1:5002->5002/tcp, 8888/tcp   justus_rapids
+754e94325cdb        172.16.4.75:5000/feature_extractor:latest-loganryn     "bash"                   22 months ago       Created                                                                         zealous_wilson
+71499202970f        172.16.4.75:5000/sg2_img:latest-loganryn               "bash"                   22 months ago       Created                                                                         festive_burnell
+3df805b4088e        172.16.4.75:5000/sg2_img:latest-loganryn               "bash"                   22 months ago       Created                                                                         relaxed_poincare
+3112bd34b160        4c16e3f04806                                           "bash"                   22 months ago       Created                                                                         amazing_austin
+02c029fe1b8e        172.16.4.75:5000/feature_extractor:latest-justus       "bash"                   2 years ago         Exited (0) 14 months ago                                                        emerging_tech
+d1af9618af31        172.16.4.75:5000/feature_extractor:latest-justus       "bash"                   2 years ago         Exited (0) 14 months ago                                                        live_image_service
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker exec -it sgan2_eshaep /bin/bash
+Error response from daemon: Container cdad74661943ff587eba0c61a05f0ea0495039999f05009f6997ddeebf8b62b7 is not running
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker start sgan2_eshaep 
+sgan2_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker exec -it sgan2_eshaep /bin/bash
+Error response from daemon: Container cdad74661943ff587eba0c61a05f0ea0495039999f05009f6997ddeebf8b62b7 is not running
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE                                                  COMMAND                  CREATED              STATUS                      PORTS                                               NAMES
+cdad74661943        sgan2_eshaep:latest                                    "/entry.sh"              About a minute ago   Exited (0) 27 seconds ago                                                       sgan2_eshaep
+1f410c74e923        api_v4_export                                          "bash"                   14 months ago        Exited (255) 7 months ago   0.0.0.0:5000->5000/tcp, 5002/tcp                    live_api_v4
+d0ee2f288259        172.16.4.75:5000/feature_extractor:latest-loganryn     "bash"                   18 months ago        Created                                                                         brave_kapitsa
+802419da6f65        rapidsai/rapidsai:cuda10.1-runtime-ubuntu18.04-py3.7   "/usr/bin/tini -- /o…"   19 months ago        Created                     8786-8787/tcp, 127.0.0.1:5002->5002/tcp, 8888/tcp   justus_rapids
+754e94325cdb        172.16.4.75:5000/feature_extractor:latest-loganryn     "bash"                   22 months ago        Created                                                                         zealous_wilson
+71499202970f        172.16.4.75:5000/sg2_img:latest-loganryn               "bash"                   22 months ago        Created                                                                         festive_burnell
+3df805b4088e        172.16.4.75:5000/sg2_img:latest-loganryn               "bash"                   22 months ago        Created                                                                         relaxed_poincare
+3112bd34b160        4c16e3f04806                                           "bash"                   22 months ago        Created                                                                         amazing_austin
+02c029fe1b8e        172.16.4.75:5000/feature_extractor:latest-justus       "bash"                   2 years ago          Exited (0) 14 months ago                                                        emerging_tech
+d1af9618af31        172.16.4.75:5000/feature_extractor:latest-justus       "bash"                   2 years ago          Exited (0) 14 months ago                                                        live_image_service
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker start sgan2_eshae
+Error response from daemon: No such container: sgan2_eshae
+Error: failed to start containers: sgan2_eshae
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker start sgan2_eshaep
+sgan2_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE                                                  COMMAND                  CREATED              STATUS                      PORTS                                               NAMES
+cdad74661943        sgan2_eshaep:latest                                    "/entry.sh"              About a minute ago   Exited (0) 1 second ago                                                         sgan2_eshaep
+1f410c74e923        api_v4_export                                          "bash"                   14 months ago        Exited (255) 7 months ago   0.0.0.0:5000->5000/tcp, 5002/tcp                    live_api_v4
+d0ee2f288259        172.16.4.75:5000/feature_extractor:latest-loganryn     "bash"                   18 months ago        Created                                                                         brave_kapitsa
+802419da6f65        rapidsai/rapidsai:cuda10.1-runtime-ubuntu18.04-py3.7   "/usr/bin/tini -- /o…"   19 months ago        Created                     8786-8787/tcp, 127.0.0.1:5002->5002/tcp, 8888/tcp   justus_rapids
+754e94325cdb        172.16.4.75:5000/feature_extractor:latest-loganryn     "bash"                   22 months ago        Created                                                                         zealous_wilson
+71499202970f        172.16.4.75:5000/sg2_img:latest-loganryn               "bash"                   22 months ago        Created                                                                         festive_burnell
+3df805b4088e        172.16.4.75:5000/sg2_img:latest-loganryn               "bash"                   22 months ago        Created                                                                         relaxed_poincare
+3112bd34b160        4c16e3f04806                                           "bash"                   22 months ago        Created                                                                         amazing_austin
+02c029fe1b8e        172.16.4.75:5000/feature_extractor:latest-justus       "bash"                   2 years ago          Exited (0) 14 months ago                                                        emerging_tech
+d1af9618af31        172.16.4.75:5000/feature_extractor:latest-justus       "bash"                   2 years ago          Exited (0) 14 months ago                                                        live_image_service
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker run sgan2_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE                                                  COMMAND                  CREATED             STATUS                      PORTS                                               NAMES
+a0125f937bfd        sgan2_eshaep                                           "/entry.sh"              4 seconds ago       Exited (0) 2 seconds ago                                                        nifty_goldberg
+cdad74661943        sgan2_eshaep:latest                                    "/entry.sh"              2 minutes ago       Exited (0) 28 seconds ago                                                       sgan2_eshaep
+1f410c74e923        api_v4_export                                          "bash"                   14 months ago       Exited (255) 7 months ago   0.0.0.0:5000->5000/tcp, 5002/tcp                    live_api_v4
+d0ee2f288259        172.16.4.75:5000/feature_extractor:latest-loganryn     "bash"                   18 months ago       Created                                                                         brave_kapitsa
+802419da6f65        rapidsai/rapidsai:cuda10.1-runtime-ubuntu18.04-py3.7   "/usr/bin/tini -- /o…"   19 months ago       Created                     8786-8787/tcp, 127.0.0.1:5002->5002/tcp, 8888/tcp   justus_rapids
+754e94325cdb        172.16.4.75:5000/feature_extractor:latest-loganryn     "bash"                   22 months ago       Created                                                                         zealous_wilson
+71499202970f        172.16.4.75:5000/sg2_img:latest-loganryn               "bash"                   22 months ago       Created                                                                         festive_burnell
+3df805b4088e        172.16.4.75:5000/sg2_img:latest-loganryn               "bash"                   22 months ago       Created                                                                         relaxed_poincare
+3112bd34b160        4c16e3f04806                                           "bash"                   22 months ago       Created                                                                         amazing_austin
+02c029fe1b8e        172.16.4.75:5000/feature_extractor:latest-justus       "bash"                   2 years ago         Exited (0) 14 months ago                                                        emerging_tech
+d1af9618af31        172.16.4.75:5000/feature_extractor:latest-justus       "bash"                   2 years ago         Exited (0) 14 months ago                                                        live_image_service
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker run -it --name sgan2_eshaep -v /home/hume-users/leebri2n/:/home/hume-users/leebri2n/ -w /home/hume-users/leebri2n/ sgan2_eshaep:latest 
+docker: Error response from daemon: Conflict. The container name "/sgan2_eshaep" is already in use by container "cdad74661943ff587eba0c61a05f0ea0495039999f05009f6997ddeebf8b62b7". You have to remove (or rename) that container to be able to reuse that name.
+See 'docker run --help'.
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker prune
+docker: 'prune' is not a docker command.
+See 'docker --help'
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker image prune -a
+WARNING! This will remove all images without at least one container associated to them.
+Are you sure you want to continue? [y/N] n
+Total reclaimed space: 0B
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker prune -a
+unknown shorthand flag: 'a' in -a
+See 'docker --help'.
+
+Usage:	docker [OPTIONS] COMMAND
+
+A self-sufficient runtime for containers
+
+Options:
+      --config string      Location of client config files (default "/home/hume-users/leebri2n/.docker")
+  -c, --context string     Name of the context to use to connect to the daemon (overrides DOCKER_HOST env var and default context set with "docker context use")
+  -D, --debug              Enable debug mode
+  -H, --host list          Daemon socket(s) to connect to
+  -l, --log-level string   Set the logging level ("debug"|"info"|"warn"|"error"|"fatal") (default "info")
+      --tls                Use TLS; implied by --tlsverify
+      --tlscacert string   Trust certs signed only by this CA (default "/home/hume-users/leebri2n/.docker/ca.pem")
+      --tlscert string     Path to TLS certificate file (default "/home/hume-users/leebri2n/.docker/cert.pem")
+      --tlskey string      Path to TLS key file (default "/home/hume-users/leebri2n/.docker/key.pem")
+      --tlsverify          Use TLS and verify the remote
+  -v, --version            Print version information and quit
+
+Management Commands:
+  builder     Manage builds
+  config      Manage Docker configs
+  container   Manage containers
+  context     Manage contexts
+  engine      Manage the docker engine
+  image       Manage images
+  network     Manage networks
+  node        Manage Swarm nodes
+  plugin      Manage plugins
+  secret      Manage Docker secrets
+  service     Manage services
+  stack       Manage Docker stacks
+  swarm       Manage Swarm
+  system      Manage Docker
+  trust       Manage trust on Docker images
+  volume      Manage volumes
+
+Commands:
+  attach      Attach local standard input, output, and error streams to a running container
+  build       Build an image from a Dockerfile
+  commit      Create a new image from a container's changes
+  cp          Copy files/folders between a container and the local filesystem
+  create      Create a new container
+  diff        Inspect changes to files or directories on a container's filesystem
+  events      Get real time events from the server
+  exec        Run a command in a running container
+  export      Export a container's filesystem as a tar archive
+  history     Show the history of an image
+  images      List images
+  import      Import the contents from a tarball to create a filesystem image
+  info        Display system-wide information
+  inspect     Return low-level information on Docker objects
+  kill        Kill one or more running containers
+  load        Load an image from a tar archive or STDIN
+  login       Log in to a Docker registry
+  logout      Log out from a Docker registry
+  logs        Fetch the logs of a container
+  pause       Pause all processes within one or more containers
+  port        List port mappings or a specific mapping for the container
+  ps          List containers
+  pull        Pull an image or a repository from a registry
+  push        Push an image or a repository to a registry
+  rename      Rename a container
+  restart     Restart one or more containers
+  rm          Remove one or more containers
+  rmi         Remove one or more images
+  run         Run a command in a new container
+  save        Save one or more images to a tar archive (streamed to STDOUT by default)
+  search      Search the Docker Hub for images
+  start       Start one or more stopped containers
+  stats       Display a live stream of container(s) resource usage statistics
+  stop        Stop one or more running containers
+  tag         Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE
+  top         Display the running processes of a container
+  unpause     Unpause all processes within one or more containers
+  update      Update configuration of one or more containers
+  version     Show the Docker version information
+  wait        Block until one or more containers stop, then print their exit codes
+
+Run 'docker COMMAND --help' for more information on a command.
+
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker container prune
+WARNING! This will remove all stopped containers.
+Are you sure you want to continue? [y/N] y
+y
+Deleted Containers:
+a0125f937bfd636b42960c454f2b7e515c034df487c8f8e11ce98fd060e822b8
+cdad74661943ff587eba0c61a05f0ea0495039999f05009f6997ddeebf8b62b7
+1f410c74e9231c68d3365d967942f0db134dc26d352d5d51d0c39f3d773937bf
+d0ee2f288259d916e6b6a079fa97d96a44e4461b8b51897d0b7ac0ef564a4290
+802419da6f65085d5f8a0ac8aec4607354cf3c044475824ff702c5e6962893d1
+754e94325cdb177a801e0e9c6a210e5f967205586becee99ffa8856dba9460b9
+71499202970f3f49a12d6286ab5fe610ccd15a9859469a1a49462b9c409d1e2e
+3df805b4088e1ea4de3f11bb52b01f4cf1ba21de1bbc3a631cd85ff452d65abd
+3112bd34b1605dadc31c930c76b8cff7758ccf1e383a340a1890137ee0fbde7d
+02c029fe1b8e3b0f1c3a62899783d63f541cf1f4a28aa7ab3fe861a9645f63d3
+d1af9618af31b8150c9d8fc2c69003424b865f8d400ccba17377d7752a58ca7e
+
+Total reclaimed space: 23.31GB
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ y
+y: command not found
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker run -it --name sgan2_eshaep -v /home/hume-users/leebri2n/:/home/hume-users/leebri2n/ -w /home/hume-users/leebri2n/ sgan2_eshaep:latest 
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE                 COMMAND             CREATED             STATUS                     PORTS               NAMES
+68e963496c68        sgan2_eshaep:latest   "/entry.sh"         3 seconds ago       Exited (0) 2 seconds ago                       sgan2_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker run -itd --name sgan2_eshaep -v /home/hume-users/leebri2n/:/home/hume-users/leebri2n/ -w /home/hume-users/leebri2n/ sgan2_eshaep:latest 
+docker: Error response from daemon: Conflict. The container name "/sgan2_eshaep" is already in use by container "68e963496c682bf578d66133c4607a6b8d1c9e45813e2f9e2ae43b5b7129d0b8". You have to remove (or rename) that container to be able to reuse that name.
+See 'docker run --help'.
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker container prune
+WARNING! This will remove all stopped containers.
+Are you sure you want to continue? [y/N] ^[[Ay
+Total reclaimed space: 0B
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker run -itd --name sgan2_eshaep -v /home/hume-users/leebri2n/:/home/hume-users/leebri2n/ -w /home/hume-users/leebri2n/ sgan2_eshaep:latest 
+docker: Error response from daemon: Conflict. The container name "/sgan2_eshaep" is already in use by container "68e963496c682bf578d66133c4607a6b8d1c9e45813e2f9e2ae43b5b7129d0b8". You have to remove (or rename) that container to be able to reuse that name.
+See 'docker run --help'.
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker container prune
+WARNING! This will remove all stopped containers.
+Are you sure you want to continue? [y/N] y
+Deleted Containers:
+68e963496c682bf578d66133c4607a6b8d1c9e45813e2f9e2ae43b5b7129d0b8
+
+Total reclaimed space: 0B
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker run -itd --name sgan2_eshaep -v /home/hume-users/leebri2n/:/home/hume-users/leebri2n/ -w /home/hume-users/leebri2n/ sgan2_eshaep:latest 
+4a43daed1caedd5a7b1f851744dc85c56bcc3109bac80477917b0b96ae8fdf6b
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE                 COMMAND             CREATED             STATUS                     PORTS               NAMES
+4a43daed1cae        sgan2_eshaep:latest   "/entry.sh"         5 seconds ago       Exited (0) 3 seconds ago                       sgan2_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ ./docker_run.sh python3 generate.py --outdir=out --trunc=1 --seeds=85,265,297,849 \
+>     --network=https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/metfaces.pkl
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ ./docker_run.sh python3 generate.py --outdir=out --trunc=1 --seeds=85,265,297,849     --network=https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/metfaces.pkl
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE                 COMMAND             CREATED              STATUS                      PORTS               NAMES
+4a43daed1cae        sgan2_eshaep:latest   "/entry.sh"         About a minute ago   Exited (0) 58 seconds ago                       sgan2_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker container prune
+WARNING! This will remove all stopped containers.
+Are you sure you want to continue? [y/N] y
+Deleted Containers:
+4a43daed1caedd5a7b1f851744dc85c56bcc3109bac80477917b0b96ae8fdf6b
+
+Total reclaimed space: 0B
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker run -itd --name sgan2_eshaep -v /home/hume-users/leebri2n/:/home/hume-users/leebri2n/ -w /home/hume-users/leebri2n/ sgan2_eshaep:latest  /bin/bash
+e09551d4c70a25153433c33a2fdbcd0c5efcd83c70e45bd5caeb3309e6d83577
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE                 COMMAND                 CREATED             STATUS              PORTS                NAMES
+e09551d4c70a        sgan2_eshaep:latest   "/entry.sh /bin/bash"   2 seconds ago       Up 1 second         6006/tcp, 8888/tcp   sgan2_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE                 COMMAND                 CREATED             STATUS              PORTS                NAMES
+e09551d4c70a        sgan2_eshaep:latest   "/entry.sh /bin/bash"   5 seconds ago       Up 4 seconds        6006/tcp, 8888/tcp   sgan2_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE                 COMMAND                 CREATED             STATUS              PORTS                NAMES
+e09551d4c70a        sgan2_eshaep:latest   "/entry.sh /bin/bash"   6 seconds ago       Up 5 seconds        6006/tcp, 8888/tcp   sgan2_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE                 COMMAND                 CREATED             STATUS              PORTS                NAMES
+e09551d4c70a        sgan2_eshaep:latest   "/entry.sh /bin/bash"   7 seconds ago       Up 6 seconds        6006/tcp, 8888/tcp   sgan2_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE                 COMMAND                 CREATED             STATUS              PORTS                NAMES
+e09551d4c70a        sgan2_eshaep:latest   "/entry.sh /bin/bash"   7 seconds ago       Up 6 seconds        6006/tcp, 8888/tcp   sgan2_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE                 COMMAND                 CREATED             STATUS              PORTS                NAMES
+e09551d4c70a        sgan2_eshaep:latest   "/entry.sh /bin/bash"   8 seconds ago       Up 7 seconds        6006/tcp, 8888/tcp   sgan2_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE                 COMMAND                 CREATED             STATUS              PORTS                NAMES
+e09551d4c70a        sgan2_eshaep:latest   "/entry.sh /bin/bash"   8 seconds ago       Up 7 seconds        6006/tcp, 8888/tcp   sgan2_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE                 COMMAND                 CREATED             STATUS              PORTS                NAMES
+e09551d4c70a        sgan2_eshaep:latest   "/entry.sh /bin/bash"   9 seconds ago       Up 8 seconds        6006/tcp, 8888/tcp   sgan2_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker exec -it sgan2_eshaep 
+"docker exec" requires at least 2 arguments.
+See 'docker exec --help'.
+
+Usage:  docker exec [OPTIONS] CONTAINER COMMAND [ARG...]
+
+Run a command in a running container
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker exec -it sgan2_eshaep /bin/bash
+root@e09551d4c70a:/home/hume-users/leebri2n# 
+root@e09551d4c70a:/home/hume-users/leebri2n# 
+root@e09551d4c70a:/home/hume-users/leebri2n# 
+root@e09551d4c70a:/home/hume-users/leebri2n# 
+root@e09551d4c70a:/home/hume-users/leebri2n# 
+root@e09551d4c70a:/home/hume-users/leebri2n# 
+root@e09551d4c70a:/home/hume-users/leebri2n# ls
+Desktop  Documents  Downloads  Music  Pictures  Public  Templates  Videos  examples.desktop  snap
+root@e09551d4c70a:/home/hume-users/leebri2n# cd Documents/
+root@e09551d4c70a:/home/hume-users/leebri2n/Documents# ;s
+bash: syntax error near unexpected token `;'
+root@e09551d4c70a:/home/hume-users/leebri2n/Documents# ls
+data  hume-eshaep  stylegan2-ada-pytorch
+root@e09551d4c70a:/home/hume-users/leebri2n/Documents# cd stylegan2-ada-pytorch/
+root@e09551d4c70a:/home/hume-users/leebri2n/Documents/stylegan2-ada-pytorch# ls
+Dockerfile  LICENSE.txt  README.md  calc_metrics.py  dataset_tool.py  dnnlib  docker_run.sh  docs  generate.py  legacy.py  metrics  projector.py  style_mixing.py  torch_utils  train.py  training
+root@e09551d4c70a:/home/hume-users/leebri2n/Documents/stylegan2-ada-pytorch# python3 generate.py --outdir=out --trunc=1 --seeds=85,265,297,849 \
+>     --network=https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/metfaces.pkl
+Loading networks from "https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/metfaces.pkl"...
+Downloading https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/metfaces.pkl ... done
+/opt/conda/lib/python3.8/site-packages/torch/cuda/__init__.py:52: UserWarning: CUDA initialization: Found no NVIDIA driver on your system. Please check that you have an NVIDIA GPU and installed a driver from http://www.nvidia.com/Download/index.aspx (Triggered internally at  ../c10/cuda/CUDAFunctions.cpp:100.)
+  return torch._C._cuda_getDeviceCount() > 0
+No CUDA runtime is found, using CUDA_HOME='/usr/local/cuda'
+Traceback (most recent call last):
+  File "generate.py", line 127, in <module>
+    generate_images() # pylint: disable=no-value-for-parameter
+  File "/opt/conda/lib/python3.8/site-packages/click/core.py", line 829, in __call__
+    return self.main(*args, **kwargs)
+  File "/opt/conda/lib/python3.8/site-packages/click/core.py", line 782, in main
+    rv = self.invoke(ctx)
+  File "/opt/conda/lib/python3.8/site-packages/click/core.py", line 1066, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/opt/conda/lib/python3.8/site-packages/click/core.py", line 610, in invoke
+    return callback(*args, **kwargs)
+  File "/opt/conda/lib/python3.8/site-packages/click/decorators.py", line 21, in new_func
+    return f(get_current_context(), *args, **kwargs)
+  File "generate.py", line 84, in generate_images
+    G = legacy.load_network_pkl(f)['G_ema'].to(device) # type: ignore
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py", line 629, in to
+    return self._apply(convert)
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py", line 359, in _apply
+    module._apply(fn)
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py", line 359, in _apply
+    module._apply(fn)
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py", line 359, in _apply
+    module._apply(fn)
+  [Previous line repeated 1 more time]
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py", line 381, in _apply
+    param_applied = fn(param)
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py", line 627, in convert
+    return t.to(device, dtype if t.is_floating_point() or t.is_complex() else None, non_blocking)
+  File "/opt/conda/lib/python3.8/site-packages/torch/cuda/__init__.py", line 172, in _lazy_init
+    torch._C._cuda_init()
+RuntimeError: Found no NVIDIA driver on your system. Please check that you have an NVIDIA GPU and installed a driver from http://www.nvidia.com/Download/index.aspx
+root@e09551d4c70a:/home/hume-users/leebri2n/Documents/stylegan2-ada-pytorch# nvidia-smi
+bash: nvidia-smi: command not found
+root@e09551d4c70a:/home/hume-users/leebri2n/Documents/stylegan2-ada-pytorch# exit
+exit
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE                 COMMAND                 CREATED             STATUS              PORTS                NAMES
+e09551d4c70a        sgan2_eshaep:latest   "/entry.sh /bin/bash"   11 minutes ago      Up 11 minutes       6006/tcp, 8888/tcp   sgan2_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker run --gpus all
+"docker run" requires at least 1 argument.
+See 'docker run --help'.
+
+Usage:  docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+
+Run a command in a new container
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker run sgan2_eshaep --gpus all
+/entry.sh: line 3: exec: --: invalid option
+exec: usage: exec [-cl] [-a name] [command [arguments ...]] [redirection ...]
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps =a
+"docker ps" accepts no arguments.
+See 'docker ps --help'.
+
+Usage:  docker ps [OPTIONS]
+
+List containers
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS                      PORTS                NAMES
+fecacfb57a57        sgan2_eshaep          "/entry.sh --gpus all"   20 seconds ago      Exited (2) 18 seconds ago                        zen_northcutt
+e09551d4c70a        sgan2_eshaep:latest   "/entry.sh /bin/bash"    12 minutes ago      Up 12 minutes               6006/tcp, 8888/tcp   sgan2_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker rm sgan2_eshaep
+Error response from daemon: You cannot remove a running container e09551d4c70a25153433c33a2fdbcd0c5efcd83c70e45bd5caeb3309e6d83577. Stop the container before attempting removal or force remove
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ ls
+calc_metrics.py  dnnlib      docker_run.sh  generate.py  LICENSE.txt  projector.py  style_mixing.py  training
+dataset_tool.py  Dockerfile  docs           legacy.py    metrics      README.md     torch_utils      train.py
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS                      PORTS                NAMES
+fecacfb57a57        sgan2_eshaep          "/entry.sh --gpus all"   49 seconds ago      Exited (2) 47 seconds ago                        zen_northcutt
+e09551d4c70a        sgan2_eshaep:latest   "/entry.sh /bin/bash"    13 minutes ago      Up 13 minutes               6006/tcp, 8888/tcp   sgan2_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker stop sgan2_eshaep 
+sgan2_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE                 COMMAND                  CREATED              STATUS                          PORTS               NAMES
+fecacfb57a57        sgan2_eshaep          "/entry.sh --gpus all"   About a minute ago   Exited (2) About a minute ago                       zen_northcutt
+e09551d4c70a        sgan2_eshaep:latest   "/entry.sh /bin/bash"    13 minutes ago       Exited (0) 2 seconds ago                            sgan2_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker rm sgan2_eshaep 
+sgan2_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS                          PORTS               NAMES
+fecacfb57a57        sgan2_eshaep        "/entry.sh --gpus all"   About a minute ago   Exited (2) About a minute ago                       zen_northcutt
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker rm sgan2_eshaep 
+Error: No such container: sgan2_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker rm zen_northcutt 
+zen_northcutt
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker build --tag sg2ada:latest
+"docker build" requires exactly 1 argument.
+See 'docker build --help'.
+
+Usage:  docker build [OPTIONS] PATH | URL | -
+
+Build an image from a Dockerfile
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker build --tag sg2ada:latest .
+Sending build context to Docker daemon  2.736MB
+Step 1/7 : FROM nvcr.io/nvidia/pytorch:20.12-py3
+ ---> ad0f29ddeb63
+Step 2/7 : ENV PYTHONDONTWRITEBYTECODE 1
+ ---> Using cache
+ ---> 268424f80640
+Step 3/7 : ENV PYTHONUNBUFFERED 1
+ ---> Using cache
+ ---> db605a25371e
+Step 4/7 : RUN pip install imageio-ffmpeg==0.4.3 pyspng==0.1.0
+ ---> Using cache
+ ---> 6acb072f2ccb
+Step 5/7 : WORKDIR /workspace
+ ---> Using cache
+ ---> b14b476743ba
+Step 6/7 : RUN (printf '#!/bin/bash\nunset TORCH_CUDA_ARCH_LIST\nexec \"$@\"\n' >> /entry.sh) && chmod a+x /entry.sh
+ ---> Using cache
+ ---> c45bda7277ff
+Step 7/7 : ENTRYPOINT ["/entry.sh"]
+ ---> Using cache
+ ---> db06057f8aae
+Successfully built db06057f8aae
+Successfully tagged sg2ada:latest
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker run --gpus all
+"docker run" requires at least 1 argument.
+See 'docker run --help'.
+
+Usage:  docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+
+Run a command in a new container
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker run --gpus all sg2ada:latest
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                     PORTS               NAMES
+7eca48dc1412        sg2ada:latest       "/entry.sh"         6 seconds ago       Exited (0) 4 seconds ago                       lucid_williams
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker containers prune
+docker: 'containers' is not a docker command.
+See 'docker --help'
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker prune containers
+docker: 'prune' is not a docker command.
+See 'docker --help'
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker sg2ada
+docker: 'sg2ada' is not a docker command.
+See 'docker --help'
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker rm sg2ada
+Error: No such container: sg2ada
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker rm sg2ada:latest
+Error: No such container: sg2ada:latest
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker rm lucid_williams 
+lucid_williams
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker build --tag sg2ada_eshaep:latest .
+Sending build context to Docker daemon  2.736MB
+Step 1/7 : FROM nvcr.io/nvidia/pytorch:20.12-py3
+ ---> ad0f29ddeb63
+Step 2/7 : ENV PYTHONDONTWRITEBYTECODE 1
+ ---> Using cache
+ ---> 268424f80640
+Step 3/7 : ENV PYTHONUNBUFFERED 1
+ ---> Using cache
+ ---> db605a25371e
+Step 4/7 : RUN pip install imageio-ffmpeg==0.4.3 pyspng==0.1.0
+ ---> Using cache
+ ---> 6acb072f2ccb
+Step 5/7 : WORKDIR /workspace
+ ---> Using cache
+ ---> b14b476743ba
+Step 6/7 : RUN (printf '#!/bin/bash\nunset TORCH_CUDA_ARCH_LIST\nexec \"$@\"\n' >> /entry.sh) && chmod a+x /entry.sh
+ ---> Using cache
+ ---> c45bda7277ff
+Step 7/7 : ENTRYPOINT ["/entry.sh"]
+ ---> Using cache
+ ---> db06057f8aae
+Successfully built db06057f8aae
+Successfully tagged sg2ada_eshaep:latest
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker exec -it sg2_eshaep
+"docker exec" requires at least 2 arguments.
+See 'docker exec --help'.
+
+Usage:  docker exec [OPTIONS] CONTAINER COMMAND [ARG...]
+
+Run a command in a running container
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker run sg2ada_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                     PORTS               NAMES
+00d29138ab23        sg2ada_eshaep       "/entry.sh"         5 seconds ago       Exited (0) 3 seconds ago                       cool_chandrasekhar
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker exec -it sg2ada_eshaep /bin/bash
+Error: No such container: sg2ada_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker exec -it sg2ada_eshaep /bin/bash
+Error: No such container: sg2ada_eshaep
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker exec -it sg2ada_eshaep:latest /bin/bash
+Error: No such container: sg2ada_eshaep:latest
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker exec -it cool_chandrasekhar /bin/bash
+Error response from daemon: Container 00d29138ab23ebb33944b8b3c911f7ccfb834efffb800960c0fd5e293dafff52 is not running
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ docker run --gpus all cool_chandrasekhar
+Unable to find image 'cool_chandrasekhar:latest' locally
+docker: Error response from daemon: pull access denied for cool_chandrasekhar, repository does not exist or may require 'docker login': denied: requested access to the resource is denied.
+See 'docker run --help'.
+leebri2n@pascal:~/Documents/stylegan2-ada-pytorch$ 
+
+root@dc3ef3d9234f:/home/hume-users/leebri2n/Documents/stylegan2-ada-pytorch# python3 generate.py --outdir=out --trunc=1 --seeds=85,265,297,849     --network=https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/metfaces.pkl
+Loading networks from "https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/metfaces.pkl"...
+Downloading https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/metfaces.pkl ... done
+/opt/conda/lib/python3.8/site-packages/torch/cuda/__init__.py:52: UserWarning: CUDA initialization: Found no NVIDIA driver on your system. Please check that you have an NVIDIA GPU and installed a driver from http://www.nvidia.com/Download/index.aspx (Triggered internally at  ../c10/cuda/CUDAFunctions.cpp:100.)
+  return torch._C._cuda_getDeviceCount() > 0
+No CUDA runtime is found, using CUDA_HOME='/usr/local/cuda'
+Traceback (most recent call last):
+  File "generate.py", line 127, in <module>
+    generate_images() # pylint: disable=no-value-for-parameter
+  File "/opt/conda/lib/python3.8/site-packages/click/core.py", line 829, in __call__
+    return self.main(*args, **kwargs)
+  File "/opt/conda/lib/python3.8/site-packages/click/core.py", line 782, in main
+    rv = self.invoke(ctx)
+  File "/opt/conda/lib/python3.8/site-packages/click/core.py", line 1066, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/opt/conda/lib/python3.8/site-packages/click/core.py", line 610, in invoke
+    return callback(*args, **kwargs)
+  File "/opt/conda/lib/python3.8/site-packages/click/decorators.py", line 21, in new_func
+    return f(get_current_context(), *args, **kwargs)
+  File "generate.py", line 84, in generate_images
+    G = legacy.load_network_pkl(f)['G_ema'].to(device) # type: ignore
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py", line 629, in to
+    return self._apply(convert)
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py", line 359, in _apply
+    module._apply(fn)
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py", line 359, in _apply
+    module._apply(fn)
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py", line 359, in _apply
+    module._apply(fn)
+  [Previous line repeated 1 more time]
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py", line 381, in _apply
+    param_applied = fn(param)
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py", line 627, in convert
+    return t.to(device, dtype if t.is_floating_point() or t.is_complex() else None, non_blocking)
+  File "/opt/conda/lib/python3.8/site-packages/torch/cuda/__init__.py", line 172, in _lazy_init
+    torch._C._cuda_init()
+RuntimeError: Found no NVIDIA driver on your system. Please check that you have an NVIDIA GPU and installed a driver from http://www.nvidia.com/Download/index.aspx
+
+Possible fix:
+TO DOCKER-COMPOSE FILE:
+{
+version: '3.5'
+
+services:
+  training:
+    build:
+      context: ""
+      dockerfile: Dockerfile
+    container_name: training
+    environment:
+      - CUDA_VISIBLE_DEVICES=0,2
+    ipc: "host" 
+}

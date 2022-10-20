@@ -1,0 +1,163 @@
+(gans) C:\Users\leebr\Documents\GitHub\stylegan2-ada>python dataset_tool.py create_from_images C:/Users/leebr/Documents/GitHub/data/output/test C:/Users/leebr/Documents/GitHub/data/input/cats
+Loading images from "C:/Users/leebr/Documents/GitHub/data/input/cats"
+Creating dataset "C:/Users/leebr/Documents/GitHub/data/output/test"
+Added 1 images.
+
+(gans) C:\Users\leebr\Documents\GitHub\stylegan2-ada>python train.py --outdir=~/training-runs --gpus=1 --data=~/datasets/custom --dry-run
+Error: --data must point to a directory containing *.tfrecords
+
+(gans) C:\Users\leebr\Documents\GitHub\stylegan2-ada>python train.py --outdir=~/training-runs --gpus=1 --data=C:/Users/leebr/Documents/GitHub/data/output/test
+
+Training options:
+{
+  "G_args": {
+    "func_name": "training.networks.G_main",
+    "fmap_base": 16384,
+    "fmap_max": 512,
+    "mapping_layers": 2,
+    "num_fp16_res": 4,
+    "conv_clamp": 256
+  },
+  "D_args": {
+    "func_name": "training.networks.D_main",
+    "mbstd_group_size": 4,
+    "fmap_base": 16384,
+    "fmap_max": 512,
+    "num_fp16_res": 4,
+    "conv_clamp": 256
+  },
+  "G_opt_args": {
+    "beta1": 0.0,
+    "beta2": 0.99,
+    "learning_rate": 0.002
+  },
+  "D_opt_args": {
+    "beta1": 0.0,
+    "beta2": 0.99,
+    "learning_rate": 0.002
+  },
+  "loss_args": {
+    "func_name": "training.loss.stylegan2",
+    "r1_gamma": 52.4288
+  },
+  "augment_args": {
+    "class_name": "training.augment.AdaptiveAugment",
+    "tune_heuristic": "rt",
+    "tune_target": 0.6,
+    "apply_func": "training.augment.augment_pipeline",
+    "apply_args": {
+      "xflip": 1,
+      "rotate90": 1,
+      "xint": 1,
+      "scale": 1,
+      "rotate": 1,
+      "aniso": 1,
+      "xfrac": 1,
+      "brightness": 1,
+      "contrast": 1,
+      "lumaflip": 1,
+      "hue": 1,
+      "saturation": 1
+    }
+  },
+  "num_gpus": 1,
+  "image_snapshot_ticks": 50,
+  "network_snapshot_ticks": 50,
+  "train_dataset_args": {
+    "path": "C:/Users/leebr/Documents/GitHub/data/output/test",
+    "max_label_size": 0,
+    "resolution": 1024,
+    "mirror_augment": false
+  },
+  "metric_arg_list": [
+    {
+      "name": "fid50k_full",
+      "class_name": "metrics.frechet_inception_distance.FID",
+      "max_reals": null,
+      "num_fakes": 50000,
+      "minibatch_per_gpu": 8,
+      "force_dataset_args": {
+        "shuffle": false,
+        "max_images": null,
+        "repeat": false,
+        "mirror_augment": false
+      }
+    }
+  ],
+  "metric_dataset_args": {
+    "path": "C:/Users/leebr/Documents/GitHub/data/output/test",
+    "max_label_size": 0,
+    "resolution": 1024,
+    "mirror_augment": false
+  },
+  "total_kimg": 25000,
+  "minibatch_size": 4,
+  "minibatch_gpu": 4,
+  "G_smoothing_kimg": 1.25,
+  "G_smoothing_rampup": 0.05,
+  "run_dir": "~/training-runs\\00000-test-auto1"
+}
+
+Output directory:  ~/training-runs\00000-test-auto1
+Training data:     C:/Users/leebr/Documents/GitHub/data/output/test
+Training length:   25000 kimg
+Resolution:        1024
+Number of GPUs:    1
+
+Creating output directory...
+Loading training set...
+Image shape: [3, 1024, 1024]
+Label shape: [0]
+
+Constructing networks...
+Setting up TensorFlow plugin "fused_bias_act.cu": Failed!
+Traceback (most recent call last):
+  File "train.py", line 561, in <module>
+    main()
+  File "train.py", line 553, in main
+    run_training(**vars(args))
+  File "train.py", line 451, in run_training
+    training_loop.training_loop(**training_options)
+  File "C:\Users\leebr\Documents\GitHub\stylegan2-ada\training\training_loop.py", line 123, in training_loop
+    Gs = G.clone('Gs')
+  File "C:\Users\leebr\Documents\GitHub\stylegan2-ada\dnnlib\tflib\network.py", line 457, in clone
+    net.copy_vars_from(self)
+  File "C:\Users\leebr\Documents\GitHub\stylegan2-ada\dnnlib\tflib\network.py", line 490, in copy_vars_from
+    src_net._get_vars()
+  File "C:\Users\leebr\Documents\GitHub\stylegan2-ada\dnnlib\tflib\network.py", line 297, in _get_vars
+    self._vars = OrderedDict(self._get_own_vars())
+  File "C:\Users\leebr\Documents\GitHub\stylegan2-ada\dnnlib\tflib\network.py", line 286, in _get_own_vars
+    self._init_graph()
+  File "C:\Users\leebr\Documents\GitHub\stylegan2-ada\dnnlib\tflib\network.py", line 151, in _init_graph
+    out_expr = self._build_func(*self._input_templates, **build_kwargs)
+  File "C:\Users\leebr\Documents\GitHub\stylegan2-ada\training\networks.py", line 231, in G_main
+    num_layers = components.synthesis.input_shape[1]
+  File "C:\Users\leebr\Documents\GitHub\stylegan2-ada\dnnlib\tflib\network.py", line 232, in input_shape
+    return self.input_shapes[0]
+  File "C:\Users\leebr\Documents\GitHub\stylegan2-ada\dnnlib\tflib\network.py", line 219, in input_shapes
+    self._input_shapes = [t.shape.as_list() for t in self.input_templates]
+  File "C:\Users\leebr\Documents\GitHub\stylegan2-ada\dnnlib\tflib\network.py", line 267, in input_templates
+    self._init_graph()
+  File "C:\Users\leebr\Documents\GitHub\stylegan2-ada\dnnlib\tflib\network.py", line 151, in _init_graph
+    out_expr = self._build_func(*self._input_templates, **build_kwargs)
+  File "C:\Users\leebr\Documents\GitHub\stylegan2-ada\training\networks.py", line 439, in G_synthesis
+    x = layer(x, layer_idx=0, fmaps=nf(1), kernel=3)
+  File "C:\Users\leebr\Documents\GitHub\stylegan2-ada\training\networks.py", line 392, in layer
+    x = modulated_conv2d_layer(x, dlatents_in[:, layer_idx], fmaps=fmaps, kernel=kernel, up=up, resample_kernel=resample_kernel, fused_modconv=fused_modconv)
+  File "C:\Users\leebr\Documents\GitHub\stylegan2-ada\training\networks.py", line 105, in modulated_conv2d_layer
+    s = apply_bias_act(s, bias_var='mod_bias', trainable=trainable) + 1 # [BI] Add bias (initially 1).
+  File "C:\Users\leebr\Documents\GitHub\stylegan2-ada\training\networks.py", line 50, in apply_bias_act
+    return fused_bias_act(x, b=tf.cast(b, x.dtype), act=act, gain=gain, clamp=clamp)
+  File "C:\Users\leebr\Documents\GitHub\stylegan2-ada\dnnlib\tflib\ops\fused_bias_act.py", line 72, in fused_bias_act
+    return impl_dict[impl](x=x, b=b, axis=axis, act=act, alpha=alpha, gain=gain, clamp=clamp)
+  File "C:\Users\leebr\Documents\GitHub\stylegan2-ada\dnnlib\tflib\ops\fused_bias_act.py", line 132, in _fused_bias_act_cuda
+    cuda_op = _get_plugin().fused_bias_act
+  File "C:\Users\leebr\Documents\GitHub\stylegan2-ada\dnnlib\tflib\ops\fused_bias_act.py", line 18, in _get_plugin
+    return custom_ops.get_plugin(os.path.splitext(__file__)[0] + '.cu')
+  File "C:\Users\leebr\Documents\GitHub\stylegan2-ada\dnnlib\tflib\custom_ops.py", line 139, in get_plugin
+    compile_opts += f' --gpu-architecture={_get_cuda_gpu_arch_string()}'
+  File "C:\Users\leebr\Documents\GitHub\stylegan2-ada\dnnlib\tflib\custom_ops.py", line 60, in _get_cuda_gpu_arch_string
+    raise RuntimeError('No GPU devices found')
+RuntimeError: No GPU devices found
+
+(gans) C:\Users\leebr\Documents\GitHub\stylegan2-ada>

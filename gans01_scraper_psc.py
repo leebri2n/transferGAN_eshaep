@@ -16,20 +16,7 @@ import csv
 import os
 from tqdm import tqdm
 
-#from instascrape import *
-
-#Append the directory to your python path
-prefix = 'C:/Users/leebr/Documents/GitHub/'
-prefix = '/home/hume-users/leebri2n/Documents/'
-
-# modify customized_path
-customized_path = 'hume-rsc/eshaep_gans/'
-proj_path = prefix + customized_path
-
-destination = os.path.join(os.path.join(prefix, 'testdata'), 'input')
-destination = os.path.join(os.path.join(prefix, 'data'), 'input')
-
-print('Path to data: {}'.format(destination))
+#import instascrape
 
 class InstagramScraper():
     """
@@ -86,8 +73,8 @@ class InstagramScraper():
           self.L.dirname_pattern = os.path.join(supcat_path, tag)
           print("Scraping for ", tag)
 
-          #self.L.download_hashtag(tag, max_count=1000,profile_pic=False, posts=False)
           pbar = tqdm(total=max_count)
+          start = time.time()
           for post in instaloader.Hashtag.from_name(self.L.context, tag).get_posts_resumable():
               try:
                   print("Saving post ", str(iter), " of ", str(limit))
@@ -109,6 +96,8 @@ class InstagramScraper():
               if req % 10 == 0: #10 requests made: Activate sleep
                   print("Sleeping to prevent lockout... (45sec)")
                   time.sleep(45)
+          finish = time.time()
+          print(tag, "SCRAPING TIME: ", int((end-start)/60), "MINUTES")
 
         pbar.close()
 
@@ -116,16 +105,24 @@ class InstagramScraper():
         self.L.dirname_pattern = os.path.join(destination, '')
         print("Scraping job completed. Resetting directory...")
 
+# ~~~~~~~~~~~~~ CUSTOM PATHING ~~~~~~~~~~~~~~~~~~~~~~~
+#Append the directory to your python path
+prefix = 'C:/Users/leebr/Documents/GitHub/'
+prefix = '/home/hume-users/leebri2n/Documents/'
+
+# modify customized_path
+customized_path = 'hume-rsc/eshaep_gans/'
+proj_path = prefix + customized_path
+
+destination = os.path.join(os.path.join(prefix, 'testdata'), 'input')
+destination = os.path.join(os.path.join(prefix, 'data'), 'input')
+
+print('Path to data: {}'.format(destination))
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~ SCRAPING JOB ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-scraper = InstagramScraper(login_user='gram.scrape2', login_pass='insta$8scrape88', dest_path=destination)
+scraper = InstagramScraper(login_user='sampleuser', login_pass='samplepass', dest_path=destination)
 print("Saving media to: ", scraper.L.dirname_pattern)
 
-
-start = time.time()
-# ~~~~~~~~~~~~~~~~~~ ENTER SCRAPING SUBJECTS ~~~~~~~~~~~~~~~~~
+# Create list of hashtags, pass in along with subdirectory desired.
+sample_tags = ['corgi', 'husky']
 scraper.download_hashtag_posts(hashtags=sample_tags, supercategory='animals', max_count=1000)
-# ~~~~~~~~~~~~~~~~ END SCRAPING ~~~~~~~~~~~~~~~~~~~~~~~~~
-end = time.time()
-
-print("TOTAL EXECUTION TIME: ", str((end-start)/60), "MINUTES")

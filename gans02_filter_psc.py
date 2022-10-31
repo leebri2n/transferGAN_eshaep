@@ -27,24 +27,8 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 import PIL
 from PIL import Image, ImageStat
-# ~~~~~~~~~~~~~~~~~~~~ Packages ~~~~~~~~~~~~~~~~~~~~
 
-# ~~~~~~~~~~~~~~~~~~~~ Pathing ~~~~~~~~~~~~~~~~~~~~
-prefix = 'C:/Users/leebr/Documents/GitHub'
-prefix = '/home/hume-users/leebri2n/Documents/'
 
-# modify customized_path
-#proj_path = os.path.join(os.path.join(prefix, 'hume-eshaep'), 'eshaep_gans')
-#data_path = os.path.join(prefix, 'data')
-proj_path = os.path.join(os.path.join(prefix, 'eshaep_gans'))
-data_path = os.path.join(prefix, 'testdata')
-data_path = os.path.join(prefix, 'data')
-
-print('Path to project files: {}'.format(proj_path))
-print('Path to data files: {}'.format(data_path))
-# ~~~~~~~~~~~~~~~~~~~~ Pathing ~~~~~~~~~~~~~~~~~~~~
-
-# ~~~~~~~~~~~~~~~~~~~~ Class ~~~~~~~~~~~~~~~~~~~~
 class Pipeline():
     """A class containing all necessary functions used for data filtration"""
 
@@ -656,46 +640,33 @@ class Pipeline():
         self.img_dict[img_outname]['original_format'] = ext
         self.img_dict[img_outname]['original_path'] = par
 
+# ~~~~~~~~~~~~~~~~~~~~ Pathing ~~~~~~~~~~~~~~~~~~~~
+prefix = 'C:/Users/leebr/Documents/GitHub'
+prefix = '/home/hume-users/leebri2n/Documents/'
 
-#~~~~~~~~~~~~~~~~~~ Execution ~~~~~~~~~~~~~~~~~~~
-start_t = time.time()#~~~~~~~~~~~~~~~~
+# modify customized_path
+#proj_path = os.path.join(os.path.join(prefix, 'hume-eshaep'), 'eshaep_gans')
+#data_path = os.path.join(prefix, 'data')
+proj_path = os.path.join(os.path.join(prefix, 'eshaep_gans'))
+data_path = os.path.join(prefix, 'testdata')
+data_path = os.path.join(prefix, 'data')
+
+print('Path to project files: {}'.format(proj_path))
+print('Path to data files: {}'.format(data_path))
 
 input_path = os.path.join(data_path, 'input') #entire input
-input_path = os.path.join(data_path, os.path.join('input', 'objects', 'trainphotography')) #specific subject
-
 output_path = os.path.join(data_path, 'output')
+
+#~~~~~~~~~~~~~~~~~~ Filtering Job ~~~~~~~~~~~~~~~~~~~
+start_t = time.time()
 print("TIME OF EXECUTION", datetime.now())
 
 pipeline = Pipeline(proj_path=proj_path, input_folder=input_path, output_folder=output_path, \
     size=512, blur_thresh=45, text_thresh=0.99, text_area=0.005)
-    #0.005???
-    #0.004??
 
 pipeline.filter(input_path = pipeline.input_path, output_path = pipeline.output_path, size=pipeline.size)
 
-end_t = time.time()#~~~~~~~~~~~~~~~~~~~~~~~
+end_t = time.time()
+print("FILTERING EXECUTION TIME: ", str((end_t-start_t)/60), "MINUTES")
 
-#print("FILTERING EXECUTION TIME: ", str((end-start)/60), "MINUTES")
-print("TOTAL EXECUTION TIME: ", str((end_t-start_t)/60), "MINUTES")
-
-s = ''
-if s == "__main__":
-    parser = argparse.ArgumentParser(prog=sys.argv[0], description='')
-    parser.add_argument('-i', '--input', help='input folder', type=str, default=None)
-    parser.add_argument('-o', '--output', help='output folder', type=str, default=None)
-    parser.add_argument('-p', '--project', help='Project path', type=str, default=os.getcwd())
-    parser.add_argument('-s', '--size', help='Size of image to resize to', type=int, default=512)
-    parser.add_argument('-b', '--blur_thresh', help='Blur threshold', type=int, default=50)
-    parser.add_argument('-t', '--text_thresh', help='Allowable ratio of text area', type=float, default=0.1)
-
-    args = parser.parse_args()
-    args_di = vars(args)
-
-    pipeline = Pipeline(proj_path=args_di['project'],
-                        input_path=args_di['input'],
-                        output_path=args_di['output'],
-                        size=args_di['size'],
-                        blur_thresh=args_di['blur_thresh'],
-                        text_area=args_di['text_thresh'])
-
-    pipeline.filter(input_path = pipeline.input_path, output_path = pipeline.output_path, size=pipeline.size)
+pipeline.filter(input_path = pipeline.input_path, output_path = pipeline.output_path, size=pipeline.size)

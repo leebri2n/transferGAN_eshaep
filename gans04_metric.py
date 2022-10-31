@@ -24,7 +24,6 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 class MetricDisplay():
     def __init__(self, in_dir, out_dir, type):
-        self.metriclog = []
         self.in_dir = in_dir
         self.out_dir = out_dir
         self.type = type
@@ -38,20 +37,29 @@ class MetricDisplay():
         plt.ylabel("Performance (FID)", fontsize=12, verticalalignment='bottom', **self.tnrfont)
 
 
-    def read_json(self, in_file):
+    def read_file(self, in_file):
         score_data = []
-        with open(in_file, 'r') as fid_file:
-            for snap in fid_file:
-                fidkimg = json.loads(snap)
-                #print(fidkimg, type(fidkimg))
-                #print(fidkimg['results']['fid50k_full'])
-                score_data.append(fidkimg['results']['fid50k_full'])
+        if (self.type == 'aug'):
+            with open(in_file, 'r') as fid_file:
+                for iter, line in enumerate(fid_file):
+                    #print(line)
+                    if iter == 0: continue
+                    snap = line.strip().split(',')
+                    #print(snap[2])
+                    score_data.append(snap[2])
+        else:
+            with open(in_file, 'r') as fid_file:
+                for snap in fid_file:
+                    fidkimg = json.loads(snap)
+                    #print(fidkimg, type(fidkimg))
+                    #print(fidkimg['results']['fid50k_full'])
+                    score_data.append(fidkimg['results']['fid50k_full'])
 
         return score_data
 
     def visualize_fid_line(self, in_file, col, lab):
-        score_data = self.read_json(os.path.join(self.in_dir, in_file))
-        #print(score_data)
+        score_data = self.read_file(os.path.join(self.in_dir, in_file))
+        #print('SCORES', score_data, print(type(score_data)))
 
         plt.plot(np.linspace(1, len(score_data), len(score_data), endpoint=True), score_data, \
             color=col, label=lab)
@@ -64,11 +72,18 @@ class MetricDisplay():
         if type == 'dataset':
             plt.title('Training Performance Across Target Datasets', \
                 fontsize=20, verticalalignment='bottom', **self.tnrfont)
+            legend.prop = self.tnrfont
             legend.set_title('Target Datasets')
         elif type == 'network':
             plt.title('Training Performance Across Starting Network', \
                 fontsize=20, verticalalignment='bottom', **self.tnrfont)
             legend.set_title('Pretrained Network')
+            legend.prop = self.tnrfont
+        elif type == 'aug':
+            plt.title('Training Performance by Augmentation Method', \
+                fontsize=20, verticalalignment='bottom', **self.tnrfont)
+            legend.set_title('Augmentation method')
+            legend.prop = self.tnrfont
         else:
             raise Exception("Invalid experiment type.")
 
@@ -93,4 +108,11 @@ vis_network.visualize_fid_line('088-metric-fid50k_full-latte.json', 'tomato', 'A
 vis_network.visualize_fid_line('093-metric-fid50k_full-latteff.json', 'blue', 'Flickr Faces')
 vis_network.visualize_fid_line('095-metric-fid50k_full-lattemet.json', 'green', 'Metfaces')
 
+vis_aug = MetricDisplay(in_dir, out_dir, 'aug')
+vis_aug.visualize_fid_line('run-train02_070-gamma15-tag-Metrics_fid50k_full.csv', 'lime', 'ADA')
+vis_aug.visualize_fid_line('run-train02_077-augnone-tag-Metrics_fid50k_full.csv', 'tomato', 'No augmentation')
+vis_aug.visualize_fid_line('run-train02_078-augfixed-tag-Metrics_fid50k_full.csv', 'lime', 'Fixed augmentation')
 plt.show()
+
+#fonts for legends, axes
+#plain tick marks

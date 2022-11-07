@@ -33,7 +33,7 @@ class MetricDisplay():
         plt.figure(figsize=(9,6))
         plt.yscale('log')
         plt.grid()
-        plt.xlabel("Training Length (kimg)", fontsize=12, verticalalignment='top', **self.tnrfont)
+        plt.xlabel("Training Length (x80 kimg)", fontsize=12, verticalalignment='top', **self.tnrfont)
         plt.ylabel("Performance (FID)", fontsize=12, verticalalignment='bottom', **self.tnrfont)
 
     def reformat(self, in_file):
@@ -86,7 +86,7 @@ class MetricDisplay():
             legend.prop = self.tnrfont
             legend.set_title('Target Datasets')
         elif type == 'network':
-            plt.title('Training Performance Across Starting Network', \
+            plt.title('Training Performance Across Starting Network, latteart', \
                 fontsize=20, verticalalignment='bottom', **self.tnrfont)
             legend.set_title('Pretrained Network')
             legend.prop = self.tnrfont
@@ -107,32 +107,32 @@ print(in_dir)
 print(out_dir)
 
 vis_dataset = MetricDisplay(in_dir, out_dir, 'dataset')
-vis_dataset.visualize_fid_line('087-metric-fid50k_full-jet.json', 'green', 'Fighter jet')
-vis_dataset.visualize_fid_line('099-metric-fid50k_full-trains.json', 'lightgreen', 'Train')
-vis_dataset.visualize_fid_line('088-metric-fid50k_full-latte.json', 'tomato', 'Latte art')
-vis_dataset.visualize_fid_line('089-metric-fid50k_full-betta.json', 'blue', 'Betta fish')
-vis_dataset.visualize_fid_line('100-metric-fid50k_full-corgi.json', 'darkblue', 'Corgi')
-vis_dataset.visualize_fid_line('098-metric-fid50k_full-baldeagle.json', 'pink', 'Bald Eagle')
-vis_dataset.visualize_fid_line('101-metric-fid50k_full-mountain.json', 'yellow', 'Mountain')
-vis_dataset.visualize_fid_line('062-metric-fid50k_full-stock.json', 'violet', 'Beach sunset')
+#vis_dataset.visualize_fid_line('087-metric-fid50k_full-jet.json', 'green', 'Fighter jet')
+vis_dataset.visualize_fid_line('099-metric-fid50k_full-trains.json', 'hotpink', 'Train')
+vis_dataset.visualize_fid_line('088-metric-fid50k_full-latte.json', 'indianred', 'Latte art')
+vis_dataset.visualize_fid_line('089-metric-fid50k_full-betta.json', 'deepskyblue', 'Betta fish')
+vis_dataset.visualize_fid_line('100-metric-fid50k_full-corgi.json', 'mediumseagreen', 'Corgi')
+#vis_dataset.visualize_fid_line('098-metric-fid50k_full-baldeagle.json', 'steelblue', 'Bald Eagle')
+#vis_dataset.visualize_fid_line('101-metric-fid50k_full-mountain.json', 'sandybrown', 'Mountain')
+vis_dataset.visualize_fid_line('062-metric-fid50k_full-stock.json', 'orange', 'Beach sunset')
 
 vis_network = MetricDisplay(in_dir, out_dir, 'network')
-vis_network.visualize_fid_line('088-metric-fid50k_full-latte.json', 'tomato', 'Animal Faces')
-vis_network.visualize_fid_line('093-metric-fid50k_full-latteff.json', 'blue', 'Flickr Faces')
-vis_network.visualize_fid_line('095-metric-fid50k_full-lattemet.json', 'green', 'Metfaces')
+vis_network.visualize_fid_line('088-metric-fid50k_full-latte.json', 'crimson', 'Animal Faces')
+vis_network.visualize_fid_line('093-metric-fid50k_full-latteff.json', 'dodgerblue', 'Flickr Faces')
+vis_network.visualize_fid_line('095-metric-fid50k_full-lattemet.json', 'limegreen', 'Metfaces')
 
 vis_network2 = MetricDisplay(in_dir, out_dir, 'network')
-vis_network2.visualize_fid_line('087-metric-fid50k_full-jet.json', 'tomato', 'Animal Faces')
-vis_network2.visualize_fid_line('092-metric-fid50k_full-jetff.json', 'blue', 'Flickr Faces')
-vis_network2.visualize_fid_line('094-metric-fid50k_full-jetmet.json', 'green', 'Metfaces')
+vis_network2.visualize_fid_line('087-metric-fid50k_full-jet.json', 'crimson', 'Animal Faces')
+vis_network2.visualize_fid_line('092-metric-fid50k_full-jetff.json', 'dodgerblue', 'Flickr Faces')
+vis_network2.visualize_fid_line('094-metric-fid50k_full-jetmet.json', 'limegreen', 'Metfaces')
 
 vis_aug = MetricDisplay(in_dir, out_dir, 'aug')
-vis_aug.reformat('run-train01_070-gamma15-tag-Metrics_fid50k_full.csv')
-vis_aug.reformat('run-train02_078-augfixed-tag-Metrics_fid50k_full.csv')
+#vis_aug.reformat('run-train02_074-gamma18-tag-Metrics_fid50k_full.csv')
+#vis_aug.reformat('run-train02_078-augfixed-tag-Metrics_fid50k_full.csv')
 
-vis_aug.visualize_fid_line('run-train01_070-gamma15-tag-Metrics_fid50k_full.csv', 'blue', 'ADA')
-vis_aug.visualize_fid_line('run-train02_077-augnone-tag-Metrics_fid50k_full.csv', 'tomato', 'No augmentation')
-vis_aug.visualize_fid_line('run-train02_078-augfixed-tag-Metrics_fid50k_full.csv', 'lime', 'Fixed augmentation')
+vis_aug.visualize_fid_line('run-train02_074-gamma18-tag-Metrics_fid50k_full.csv', 'darkviolet', 'ADA')
+vis_aug.visualize_fid_line('run-train02_077-augnone-tag-Metrics_fid50k_full.csv', 'palevioletred', 'No augmentation')
+vis_aug.visualize_fid_line('run-train02_078-augfixed-tag-Metrics_fid50k_full.csv', 'lightseagreen', 'Fixed augmentation')
 plt.show()
 
 #fonts for legends, axes

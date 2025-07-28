@@ -1,2 +1,0 @@
-REJECTED: 5794 images
-ACCEPTED: 5779 images

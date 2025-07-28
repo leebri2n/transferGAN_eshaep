@@ -1,7 +1,0 @@
-- point of transfer learning: to have network learn the heavy learning stuff to base
-- want to see: with a small dataset by some subject, (hashtag) - how will it perform?
-
-next steps:
-- lower learning rate, train for longer? -> more gradual adjustments
-
-
